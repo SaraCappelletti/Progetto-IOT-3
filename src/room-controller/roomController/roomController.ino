@@ -6,15 +6,13 @@
 #include "SerialComTask.h"
 
 
-ServoMotor* servoMotor = new ServoMotor(SERVOMOTOR_PIN);
+ServoMotor* servoMotor = new ServoMotor(SERVOMOTOR_PIN, TOLERANCE);
 Led* led = new Led(LED_PIN);
 Scheduler sched(SCHEDULER_PERIOD);
 BTComTask* btComTask = new BTComTask(RX_BT_PIN, TX_BT_PIN, servoMotor, led);
 SerialComTask* serialComTask = new SerialComTask(servoMotor, led);
 
 void setup(){
-  //serial is initialized in SerialComTask
-  //Serial.begin(9600)
 
   //initializing scheduler
   sched.init();
