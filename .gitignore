@@ -1,2 +1,5 @@
 material/*
 */*.png
+
+# room-service
+/src/room-service/build/
