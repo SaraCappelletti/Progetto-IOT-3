@@ -1,19 +1,14 @@
 #ifndef __TASK__
 #define __TASK__
 
-#include "DataManager.h"
 class Task {
-  
+  int myPeriod;
   int timeElapsed;
   bool active;
-  DataManager* myData;
   
 public:
-  int myPeriod;
-  
-  virtual void init(int period, DataManager* data){
+  virtual void init(int period){
     myPeriod = period;  
-    myData = data;
     timeElapsed = 0;
     active = true;
   }
@@ -36,10 +31,6 @@ public:
 
   void setActive(bool active){
     this->active = active;
-  }
-
-  void changePeriod(int period){
-    this->myPeriod = period;
   }
   
 };
