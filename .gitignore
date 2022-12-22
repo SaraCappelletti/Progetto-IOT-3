@@ -2,4 +2,7 @@ material/*
 */*.png
 
 # room-service
+/src/room-service/.gradle/
+/src/room-service/.idea/
+/src/room-service/room-service.iml
 /src/room-service/build/
