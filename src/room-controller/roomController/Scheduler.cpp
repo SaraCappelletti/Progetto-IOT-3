@@ -13,8 +13,7 @@ Scheduler::Scheduler(const unsigned long basePeriod) : basePeriod(basePeriod) {}
 
 void Scheduler::init() {
   timerFlag = false;
-  Scheduler::manual = false;
-  Scheduler::remote = false;
+  Scheduler::receivingBT = false;
   long period = 1000l*basePeriod;
   Timer1.initialize(period);
   Timer1.attachInterrupt(timerHandler);

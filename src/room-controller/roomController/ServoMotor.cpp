@@ -1,13 +1,15 @@
 #include "ServoMotor.h"
 
-ServoMotor::ServoMotor(const int pin) : Component(pin) {
+ServoMotor::ServoMotor(const int pin, const int tolerance) : Component(pin), tolerance(tolerance) {
     motor.attach(pin);
 }
 
 void ServoMotor::move(int angle) {
-  //muovo il motore e mi salvo l'ultimo valore dell'angolo
-  motor.write(MIN_PULSE_WIDTH + angle*coeff);
-  this->angle = angle;
+  //moving the motor only if a new angle has been requested
+  if((angle > this->angle + tolerance) || (angle < this->angle - tolerance)){
+    motor.write(MIN_PULSE_WIDTH + angle*coeff);
+    this->angle = angle;    
+  }
 }
 
 int ServoMotor::getAngle() {

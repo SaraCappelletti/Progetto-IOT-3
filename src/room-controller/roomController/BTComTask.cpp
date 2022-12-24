@@ -1,17 +1,25 @@
 #include "BTComTask.h"
 #include "SoftwareSerial.h"
 #include <Arduino.h>
+#include "Scheduler.h"
 
 BTComTask::BTComTask(int rxPin, int txPin, ServoMotor* servoMotor, Led* led) : 
   rxPin(rxPin), txPin(txPin), servoMotor(servoMotor), led(led) {}
   
 void BTComTask::init(int period){
   Task::init(period);
-  channel.begin(9600);
   SoftwareSerial channel(rxPin, txPin);
+  channel.begin(9600);
+  
 }
   
 void BTComTask::tick(){
   char msg = (char) channel.read();
-  //TODO controllare il messaggio ricevuto dal BT e muovere il servo/accendere la luce
+  if(msg != -1){
+    Scheduler::setBTReceiving(true);
+    //TODO PARSING DEL MESSAGGIO E MOVIMENTO CONSEGUENTE
+  }
+  else{
+    Scheduler::setBTReceiving(false);
+  }
 }

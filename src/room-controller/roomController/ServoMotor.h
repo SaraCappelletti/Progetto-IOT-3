@@ -7,13 +7,13 @@
 #include "ServoTimer2.h"
 
 class ServoMotor : public Component {
-  //int prev = 0;
   ServoTimer2 motor;
   float coeff = ((float)MAX_PULSE_WIDTH-(float)MIN_PULSE_WIDTH)/180;
-  int angle = 0; 
+  int angle = 0;
+  int tolerance;
 
   public:
-    ServoMotor(const int pin); 
+    ServoMotor(const int pin, const int tolerance); 
     void move(int angle);
     int getAngle();
 };

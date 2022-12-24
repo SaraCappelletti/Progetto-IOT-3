@@ -18,4 +18,9 @@
 #define BT_COM_PERIOD 200
 #define SERIAL_COM_PERIOD 200
 
+#define MAXNTASK 20
+
+#define TOLERANCE 5
+
+
 #endif
