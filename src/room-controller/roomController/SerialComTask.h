@@ -8,6 +8,7 @@
 class SerialComTask : public Task {
   ServoMotor* servoMotor;
   Led* led;
+  bool msSent;
 
 public:
   SerialComTask(ServoMotor* servoMotor, Led* led);  

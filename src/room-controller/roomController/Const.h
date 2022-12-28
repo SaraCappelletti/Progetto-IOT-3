@@ -22,5 +22,6 @@
 
 #define TOLERANCE 5
 
+#define DELIMITER '/'
 
 #endif
