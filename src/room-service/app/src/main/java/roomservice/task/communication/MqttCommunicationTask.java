@@ -40,7 +40,7 @@ public class MqttCommunicationTask implements Task {
 					}
 				});
 	}
-	
+
 	@Override
 	public void execute() {
 
