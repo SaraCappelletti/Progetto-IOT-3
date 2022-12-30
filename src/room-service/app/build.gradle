@@ -17,17 +17,16 @@ repositories {
 }
 
 dependencies {
-
     implementation 'io.vertx:vertx-core:4.3.6'
     implementation 'io.vertx:vertx-web:4.3.6'
     // implementation 'io.vertx:vertx-web-client:4.3.6'
     implementation 'io.vertx:vertx-mqtt:4.3.6'
+}
 
-    // Use JUnit test framework.
-    // testImplementation 'junit:junit:4.13.2'
-
-    // This dependency is used by the application.
-    // implementation 'com.google.guava:guava:31.0.1-jre'
+java {
+    toolchain {
+            languageVersion.set(JavaLanguageVersion.of(18))
+    }
 }
 
 application {
