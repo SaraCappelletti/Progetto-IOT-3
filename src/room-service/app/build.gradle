@@ -31,5 +31,5 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.roomservice.RoomService'
+    mainClass = 'roomservice.RoomService'
 }
