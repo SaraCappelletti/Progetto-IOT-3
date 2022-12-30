@@ -5,4 +5,4 @@ material/*
 /src/room-service/.gradle/
 /src/room-service/.idea/
 /src/room-service/room-service.iml
-/src/room-service/build/
+/src/room-service/app/build/
