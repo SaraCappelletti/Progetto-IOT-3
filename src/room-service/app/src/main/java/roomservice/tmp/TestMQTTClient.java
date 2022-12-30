@@ -1,4 +1,4 @@
-package com.roomservice.tmp;
+package roomservice.tmp;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;

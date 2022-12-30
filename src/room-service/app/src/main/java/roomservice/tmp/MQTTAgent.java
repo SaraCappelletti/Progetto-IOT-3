@@ -1,4 +1,4 @@
-package com.roomservice.tmp;
+package roomservice.tmp;
 
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.vertx.core.AbstractVerticle;

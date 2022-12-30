@@ -1,4 +1,4 @@
-package com.roomservice.task;
+package roomservice.task;
 
 public interface Task {
     void execute();

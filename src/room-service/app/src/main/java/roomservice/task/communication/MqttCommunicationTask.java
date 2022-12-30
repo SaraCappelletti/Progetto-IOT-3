@@ -1,12 +1,12 @@
-package com.roomservice.task.mqtt;
+package roomservice.task.communication;
 
-import com.roomservice.task.Task;
+import roomservice.task.Task;
 import io.vertx.core.Vertx;
 import io.vertx.mqtt.MqttServer;
 
-public class MQTTServer implements Task {
+public class MqttCommunicationTask implements Task {
 
-	public MQTTServer() {
+	public MqttCommunicationTask() {
 		Vertx vertx = Vertx.vertx();
 		MqttServer mqttServer = MqttServer.create(vertx);
 		mqttServer.endpointHandler(endpoint -> {
@@ -40,7 +40,6 @@ public class MQTTServer implements Task {
 					}
 				});
 	}
-
 
 	@Override
 	public void execute() {
