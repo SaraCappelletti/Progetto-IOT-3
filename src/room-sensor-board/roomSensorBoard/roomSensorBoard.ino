@@ -1,51 +1,121 @@
+#include <WiFi.h>
+#include <PubSubClient.h>
 #include "Const.h"
-#include "Task.h"
+#include "Photoresistor.h"
+#include "Pir.h"
+#include "Led.h"
 
 
-TaskHandle_t Task1;
-TaskHandle_t Task2;
+TaskHandle_t ComunicationTask;
+TaskHandle_t LedTask;
 
-const int led_1 = 4;
-const int led_2 = 5;
 
-void setup() {
-  Serial.begin(115200); 
-  pinMode(led_1, OUTPUT);
-  pinMode(led_2, OUTPUT);
+WiFiClient espClient;
+PubSubClient client(espClient);
 
-  xTaskCreatePinnedToCore(Task1code,"Task1",10000,NULL,1,&Task1,0);                         
-  delay(500);
+char msg[MSG_BUFFER_SIZE];
 
-  xTaskCreatePinnedToCore(Task2code,"Task2",10000,NULL,1,&Task2,1);          
-  delay(500); 
+Led* led = new Led(LED_PIN);
+Pir* pir = new Pir(PIR_PIN);
+Photoresistor photores = new Photoresistor(PHOTORES_PIN);
+
+void setup_wifi() {
+
+  delay(10);
+
+  Serial.println(String("Connecting to ") + ssid);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
-void Task1code( void * parameter ){
-  Serial.print("Task1 is running on core ");
-  Serial.println(xPortGetCoreID());
-
-  for(;;){
-    digitalWrite(led_1, HIGH);
-    delay(500);
-    digitalWrite(led_1, LOW);
-    delay(500);
-  } 
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.println(String("Message arrived on [") + topic + "] len: " + length );
 }
 
-void Task2code( void * parameter ){
-  Serial.print("Task2 is running on core ");
-  Serial.println(xPortGetCoreID());
+void reconnect() {
+  
+  // Loop until we're reconnected
+  
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    
+    // Create a random client ID
+    String clientId = String("esiot-2122-client-")+String(random(0xffff), HEX);
 
-  for(;;){
-    digitalWrite(led_2, HIGH);
-    delay(1000);
-    digitalWrite(led_2, LOW);
-    delay(1000);
+    // Attempt to connect
+    if (client.connect(clientId.c_str())) {
+      Serial.println("connected");
+      // Once connected, publish an announcement...
+      // ... and resubscribe
+      client.subscribe(topic);
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
   }
 }
 
+void ComunicationTaskCode( void * parameter ){
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+  //TO DO   inviare lo stato del pir e della fotoresistenza
+  unsigned long now = millis();
+  if (now - lastMsgTime > 10000) {
+    lastMsgTime = now;
+    value++;
+
+    /* creating a msg in the buffer */
+    snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
+
+    Serial.println(String("Publishing message: ") + msg);
+    
+    /* publishing the msg */
+    client.publish(topic, msg);  
+  }
+  delay(DELAY_PERIOD);
+}
+
+void LedTaskCode( void * parameter ){
+  if(photores->isDetected()){
+    led->turnOn();
+  }
+  else if(!(photores->isDetected())){
+    led->turnOff();
+  }
+}
+
+void setup() {
+  Serial.begin(9600); 
+  pinMode(led_1, OUTPUT);
+  pinMode(led_2, OUTPUT);
+  setup_wifi();
+  randomSeed(micros());
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+  xTaskCreatePinnedToCore(ComunicationTaskCode,"ComunicationTask",10000,NULL,1,&ComunicationTask,0);                         
+  delay(500);
+  xTaskCreatePinnedToCore(LedTaskCode,"LedTask",10000,NULL,1,&LedTask,1);                         
+  delay(500);
+}
+
+
+
 void loop() {
-  Serial.print("this is the main loop running on core ");
-  Serial.println(xPortGetCoreID());
-  delay(1000000);
+
 }
