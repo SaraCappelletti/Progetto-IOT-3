@@ -17,10 +17,10 @@ repositories {
 }
 
 dependencies {
-    //implementation 'io.vertx:vertx-core:4.3.6'
-    // implementation 'io.vertx:vertx-web-client:4.3.6'
+    implementation 'io.vertx:vertx-core:4.3.6'
     implementation 'io.vertx:vertx-web:4.3.7'
     implementation 'io.vertx:vertx-mqtt:4.3.7'
+    // implementation 'io.vertx:vertx-web-client:4.3.6'
 
     // SystemUtils
     implementation 'org.apache.commons:commons-lang3:3.12.0'

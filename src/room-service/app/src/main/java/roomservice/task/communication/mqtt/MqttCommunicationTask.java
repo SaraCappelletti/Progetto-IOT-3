@@ -1,4 +1,4 @@
-package roomservice.task.communication;
+package roomservice.task.communication.mqtt;
 
 import roomservice.task.Task;
 import io.vertx.core.Vertx;
