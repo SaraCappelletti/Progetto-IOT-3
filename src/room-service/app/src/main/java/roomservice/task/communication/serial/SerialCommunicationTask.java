@@ -6,11 +6,11 @@ public class SerialCommunicationTask implements Task {
 
     final CommChannel channel;
 
-    public SerialCommunicationTask(final String port) throws SerialCommunicationTaskException {
+    public SerialCommunicationTask(final String port) throws Exception {
         try {
             this.channel = new SerialCommChannel(port, 9600);
         } catch (Exception e) {
-            throw new SerialCommunicationTaskException();
+            throw new  Exception("Unable to create Serial-Communication Task");
         }
     }
 
