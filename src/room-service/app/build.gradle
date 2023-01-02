@@ -21,6 +21,15 @@ dependencies {
     implementation 'io.vertx:vertx-web:4.3.6'
     // implementation 'io.vertx:vertx-web-client:4.3.6'
     implementation 'io.vertx:vertx-mqtt:4.3.6'
+
+    // SystemUtils
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    // Java Simple Serial Connector
+    implementation 'io.github.java-native:jssc:2.9.4'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.slf4j:slf4j-jdk14:1.7.36'
 }
 
 java {
