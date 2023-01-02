@@ -2,13 +2,14 @@ package roomservice;
 
 import roomservice.scheduler.Scheduler;
 import roomservice.task.Task;
+import roomservice.task.communication.http.HttpCommunicationTask;
 import roomservice.task.communication.serial.SerialCommunicationTask;
-import roomservice.task.communication.serial.SerialCommunicationTaskException;
 
 import java.util.Set;
 import org.apache.commons.lang3.SystemUtils;
 
 public class RoomService {
+
     public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Usage: " + (SystemUtils.IS_OS_UNIX ? "./gradlew" : "gradlew.bat") + " --args=\"<Port name for arduino serial communication>\"");
@@ -21,26 +22,20 @@ public class RoomService {
         try {
 //            final Task MqttCommunicationTask = new MqttCommunicationTask(args[0]);
 //            final Task HttpunicationTask = new HttpCommunicationTask(args[0]);
-            final Task serialCommunicationTask = new SerialCommunicationTask(args[0]);
+//            final Task serialCommunicationTask = new SerialCommunicationTask(args[0]);
+            final Task httpCommunicationTask = new HttpCommunicationTask();
             final Scheduler scheduler = new Scheduler(
                     Set.of(
 //                        new MqttCommunicationTask(),
-//                        new HttpCommunicationTask(),
-                            serialCommunicationTask
+                            httpCommunicationTask//,
+//                            serialCommunicationTask
                     )
             );
 
             scheduler.schedule();
-//        } catch (Exception e) {
-//            System.out.println("Unable to create MqttCommunication Task");
-//            System.exit(0);
-//        } catch (Exception e) {
-//            System.out.println("Unable to create HttpCommunication Task");
-//            System.exit(0);
-        } catch (SerialCommunicationTaskException e) {
-            // 1 catch with ternary selector on exception?
-            System.out.println("Unable to create SerialCommunication Task");
-            System.exit(0);
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
+
 }
