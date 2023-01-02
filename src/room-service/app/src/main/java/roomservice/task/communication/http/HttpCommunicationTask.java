@@ -1,94 +1,52 @@
-package roomservice.task.communication;
+package roomservice.task.communication.http;
 
-import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import roomservice.task.Task;
 
-public class HttpCommunicationTask extends AbstractVerticle implements Task {
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-    public HttpCommunicationTask() {
-        vertx.createHttpServer();
-        Router router = Router.router(vertx);
+public class HttpCommunicationTask implements Task {
 
+    int i;
+    private String s;
+
+    public HttpCommunicationTask() throws RuntimeException {
         Vertx vertx = Vertx.vertx();
-        VertxHTTPServerExample service = new VertxHTTPServerExample();
-        vertx.deployVerticle(service);
 
-    }
-
-    @Override
-    public void start() throws Exception {
-        // Create a Router
         Router router = Router.router(vertx);
 
-        // Mount the handler for all incoming requests at every path and HTTP method
-        router.route().handler(context -> {
-            // Get the address of the request
-            String address = context.request().connection().remoteAddress().toString();
-            // Get the query parameter "name"
-            MultiMap queryParams = context.queryParams();
-            String name = queryParams.contains("name") ? queryParams.get("name") : "unknown";
-            // Write a json response
-            context.json(new JsonObject().put("name", name).put("address", address).put("message",
-                    "Hello " + name + " connected from " + address));
-        });
+        router.route()
+                .handler(BodyHandler.create())
+                .handler(req -> {
+                    req.request().params().forEach((n, v) -> System.out.println(n + ": " + v));
+                    req.json(new JsonObject(req.request().params()
+                            .entries().stream()
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
+                });
 
         // Create the HTTP server
         vertx.createHttpServer()
-                // Handle every request using the router
+                // Handle every request
                 .requestHandler(router)
                 // Start listening
-                .listen(8080)
+                .listen(8088)
                 // Print the port
-                .onSuccess(server -> System.out.println("HTTP server started on port " + server.actualPort()));
+                .onSuccess(server -> System.out.println("HTTP on http://localhost:" + server.actualPort() +
+                                                        "\n--------------------\n"))
+                .onFailure(server -> {
+                    throw new RuntimeException("Unable to create Serial-Communication Task");
+                });
     }
 
     @Override
     public void execute() {
-
+//        System.out.println(i++ + s);
     }
-}
-
-/*
-*
-import io.vertx.core.*;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.Router;
-
-public class VertxHTTPServerExample extends AbstractVerticle {
-        @Override
-        public void start() throws Exception {
-                // Create a Router
-                Router router = Router.router(vertx);
-
-                // Mount the handler for all incoming requests at every path and HTTP method
-                router.route().handler(context -> {
-                        // Get the address of the request
-                        String address = context.request().connection().remoteAddress().toString();
-                        // Get the query parameter "name"
-                        MultiMap queryParams = context.queryParams();
-                        String name = queryParams.contains("name") ? queryParams.get("name") : "unknown";
-                        // Write a json response
-                        context.json(new JsonObject().put("name", name).put("address", address).put("message",
-                                        "Hello " + name + " connected from " + address));
-                });
-
-                // Create the HTTP server
-                vertx.createHttpServer()
-                                // Handle every request using the router
-                                .requestHandler(router)
-                                // Start listening
-                                .listen(8080)
-                                // Print the port
-                                .onSuccess(server -> System.out.println("HTTP server started on port " + server.actualPort()));
-        }
-
-        public static void main(String[] args) {
-                Vertx vertx = Vertx.vertx();
-                VertxHTTPServerExample service = new VertxHTTPServerExample();
-                vertx.deployVerticle(service);
-
-        }
 
 }
-* */
