@@ -18,8 +18,8 @@ public class SerialCommunicationTask implements Task {
     public void execute() {
         System.out.println("Serial\n" +
                 "--------------------\n");
-        System.out.println("Sending ping");
-        channel.sendMsg("ping");
+        System.out.println("Sending OFF/0");
+        channel.sendMsg("OFF/0");
         String msg = null;
         try {
             msg = this.channel.receiveMsg();
