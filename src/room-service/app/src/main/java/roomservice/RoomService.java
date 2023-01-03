@@ -1,8 +1,11 @@
 package roomservice;
 
 import roomservice.scheduler.Scheduler;
+import roomservice.smartroom.SmartRoom;
+import roomservice.smartroom.SmartRoomImpl;
 import roomservice.task.Task;
 import roomservice.task.communication.http.HttpCommunicationTask;
+import roomservice.task.communication.mqtt.MqttCommunicationTask;
 import roomservice.task.communication.serial.SerialCommunicationTask;
 
 import java.util.Set;
@@ -19,15 +22,17 @@ public class RoomService {
                             "Room-Service started\n" +
                             "--------------------");
 
+        SmartRoom room = new SmartRoomImpl();
+
         try {
-//            final Task MqttCommunicationTask = new MqttCommunicationTask(args[0]);
-//            final Task HttpunicationTask = new HttpCommunicationTask(args[0]);
-            final Task serialCommunicationTask = new SerialCommunicationTask(args[0]);
-//            final Task httpCommunicationTask = new HttpCommunicationTask();
+//            final Task httpCommunicationTask = new HttpCommunicationTask(room);
+//            final Task mqttCommunicationTask = new MqttCommunicationTask(room);
+            final Task serialCommunicationTask = new SerialCommunicationTask(args[0], room);
+
             final Scheduler scheduler = new Scheduler(
                     Set.of(
-//                        new MqttCommunicationTask(),
 //                            httpCommunicationTask//,
+//                            mqttCommunicationTask(),
                             serialCommunicationTask
                     )
             );
