@@ -29,7 +29,7 @@ public class LedSwitchActivity extends AppCompatActivity {
     private boolean ledState = false;
     private int sliderState = 0;
     private BluetoothClientConnectionThread connectionThread;
-    //private final Timer timer = new Timer();
+    private final Timer timer = new Timer();
 
 
     @Override
@@ -47,13 +47,11 @@ public class LedSwitchActivity extends AppCompatActivity {
         ledButton.setOnClickListener((v) -> {
             ledState = !ledState;
             ledButton.setBackgroundColor(ledState? Color.GREEN : Color.RED);
-            sendMessage();
         });
         rollerBlindsSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 sliderState = i;
-                sendMessage();
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -85,12 +83,6 @@ public class LedSwitchActivity extends AppCompatActivity {
         Log.i(C.TAG, "Connecting to " + bluetoothDevice.getName());
         connectionThread = new BluetoothClientConnectionThread(bluetoothDevice, btAdapter, this::manageConnectedSocket);
         connectionThread.start();
-        /*timer.scheduleAtFixedRate(new TimerTask(){
-            @Override
-            public void run(){
-                sendMessage();
-            }
-        },0,500);*/
     }
 
     private void manageConnectedSocket(BluetoothSocket socket) {
@@ -104,13 +96,19 @@ public class LedSwitchActivity extends AppCompatActivity {
             rollerBlindsSlider.setEnabled(true);
             ledButton.setEnabled(true);
             ledButton.setBackgroundColor(Color.RED);
+            timer.schedule(new TimerTask(){
+                @Override
+                public void run(){
+                    sendMessage();
+                }
+            },100,500);
         });
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //timer.cancel();
+        timer.cancel();
         connectionThread.cancel();
     }
 
