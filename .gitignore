@@ -8,3 +8,4 @@ material/*
 /src/room-service/.project
 /src/room-service/room-service.iml
 /src/room-service/app/build/
+/src/room-service/app/file-uploads/
