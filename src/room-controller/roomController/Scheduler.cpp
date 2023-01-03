@@ -44,6 +44,6 @@ bool Scheduler::isBTReceiving(){
   return Scheduler::receivingBT;
 }
 
-void Scheduler::setBTReceiving(bool receivingBT){
-  Scheduler::receivingBT = receivingBT;
+void Scheduler::setBTReceiving(bool state){
+  Scheduler::receivingBT = state;
 }

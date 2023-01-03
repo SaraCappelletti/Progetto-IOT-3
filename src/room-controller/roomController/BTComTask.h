@@ -4,12 +4,12 @@
 #include "Task.h"
 #include "ServoMotor.h"
 #include "Led.h"
-#include "SoftwareSerial.h"
+#include "MsgServiceBT.h"
 
 class BTComTask : public Task {
   int rxPin;
   int txPin;
-  SoftwareSerial* channel;
+  msgServiceBT* service;
   ServoMotor* servoMotor;
   Led* led;
 
