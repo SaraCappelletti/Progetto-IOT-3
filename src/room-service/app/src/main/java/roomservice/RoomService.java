@@ -22,13 +22,13 @@ public class RoomService {
         try {
 //            final Task MqttCommunicationTask = new MqttCommunicationTask(args[0]);
 //            final Task HttpunicationTask = new HttpCommunicationTask(args[0]);
-//            final Task serialCommunicationTask = new SerialCommunicationTask(args[0]);
-            final Task httpCommunicationTask = new HttpCommunicationTask();
+            final Task serialCommunicationTask = new SerialCommunicationTask(args[0]);
+//            final Task httpCommunicationTask = new HttpCommunicationTask();
             final Scheduler scheduler = new Scheduler(
                     Set.of(
 //                        new MqttCommunicationTask(),
-                            httpCommunicationTask//,
-//                            serialCommunicationTask
+//                            httpCommunicationTask//,
+                            serialCommunicationTask
                     )
             );
 
