@@ -1,4 +1,4 @@
-package com.example.remoteapp;
+package com.example.remoteblinkapp;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;

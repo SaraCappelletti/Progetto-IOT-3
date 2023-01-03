@@ -1,7 +1,12 @@
-package com.example.remoteapp;
+package com.example.remoteblinkapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +28,7 @@ public class LedSwitchEmulatedActivity extends AppCompatActivity {
     private int sliderState;
     private OutputStream emulatedBluetoothOutputStream;
     private EmulatedClientConnectionThread connectionThread;
-    private Timer timer = new Timer();
+    //private Timer timer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +43,13 @@ public class LedSwitchEmulatedActivity extends AppCompatActivity {
         ledButton.setOnClickListener((v) -> {
             ledState = !ledState;
             ledButton.setBackgroundColor(ledState? Color.GREEN : Color.RED);
+            sendMessage();
         });
         rollerBlindsSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 sliderState = i;
+                sendMessage();
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -70,12 +77,12 @@ public class LedSwitchEmulatedActivity extends AppCompatActivity {
         super.onStart();
         connectionThread = new EmulatedClientConnectionThread(this::manageConnectedSocket);
         connectionThread.start();
-        timer.scheduleAtFixedRate(new TimerTask(){
+        /*timer.scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
                 sendMessage();
             }
-        },0,500);
+        },0,500);*/
     }
 
     private void manageConnectedSocket(Socket socket) {
@@ -95,7 +102,7 @@ public class LedSwitchEmulatedActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        timer.cancel();
+        //timer.cancel();
         connectionThread.cancel();
     }
 }
