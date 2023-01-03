@@ -12,42 +12,62 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.SeekBar;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressLint("MissingPermission")
 public class LedSwitchActivity extends AppCompatActivity {
 
     private OutputStream bluetoothOutputStream;
-    private Button remoteButton;
-    private boolean ledState;
+    private Button ledButton;
+    private SeekBar rollerBlindsSlider;
+    private boolean ledState = false;
+    private int sliderState = 0;
     private BluetoothClientConnectionThread connectionThread;
+    private final Timer timer = new Timer();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_led_switch);
-        ledState = false;
         initUI();
     }
 
     private void initUI() {
-        remoteButton = findViewById(R.id.remotebutton);
-        remoteButton.setBackgroundColor(Color.LTGRAY);
-        remoteButton.setEnabled(false);
-        remoteButton.setOnClickListener((v) -> sendMessage());
+        ledButton = findViewById(R.id.ledButton);
+        rollerBlindsSlider = findViewById((R.id.rollerBlindsSlider));
+        ledButton = findViewById(R.id.ledButton);
+        rollerBlindsSlider = findViewById((R.id.rollerBlindsSlider));
+        ledButton.setOnClickListener((v) -> {
+            ledState = !ledState;
+            ledButton.setBackgroundColor(ledState? Color.GREEN : Color.RED);
+        });
+        rollerBlindsSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                sliderState = i;
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
     }
 
     private void sendMessage() {
         new Thread(() -> {
             try {
-                String message = ledState ? "off\n" : "on\n";
+                String ledMessage = ledState ? "ON" : "OFF";
+                String message = ledMessage + "/" + sliderState + "\n";
                 bluetoothOutputStream.write(message.getBytes(StandardCharsets.UTF_8));
-                ledState = !ledState;
-                runOnUiThread(() -> remoteButton.setBackgroundColor(ledState? Color.GREEN : Color.RED));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -63,6 +83,12 @@ public class LedSwitchActivity extends AppCompatActivity {
         Log.i(C.TAG, "Connecting to " + bluetoothDevice.getName());
         connectionThread = new BluetoothClientConnectionThread(bluetoothDevice, btAdapter, this::manageConnectedSocket);
         connectionThread.start();
+        timer.scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
+                sendMessage();
+            }
+        },0,500);
     }
 
     private void manageConnectedSocket(BluetoothSocket socket) {
@@ -73,14 +99,16 @@ public class LedSwitchActivity extends AppCompatActivity {
             Log.e(C.TAG, "Error occurred when creating output stream", e);
         }
         runOnUiThread(() -> {
-            remoteButton.setEnabled(true);
-            remoteButton.setBackgroundColor(Color.RED);
+            rollerBlindsSlider.setEnabled(true);
+            ledButton.setEnabled(true);
+            ledButton.setBackgroundColor(Color.RED);
         });
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        timer.cancel();
         connectionThread.cancel();
     }
 
