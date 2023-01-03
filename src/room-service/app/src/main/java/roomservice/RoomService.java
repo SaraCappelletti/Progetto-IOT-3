@@ -12,7 +12,8 @@ public class RoomService {
 
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("Usage: " + (SystemUtils.IS_OS_UNIX ? "./gradlew" : "gradlew.bat") + " --args=\"<Port name for arduino serial communication>\"");
+//            System.out.println("Usage: " + (SystemUtils.IS_OS_UNIX ? "./gradlew" : "gradlew.bat") + " --args=\"<Port name for arduino serial communication>\"");
+            System.out.println("Usage: " + (System.getenv("SHELL") != null ? "./gradlew" : ".\\gradlew.bat") + " --args=\"<Port name for arduino serial communication>\"");
             return;
         }
         System.out.println("--------------------\n" +
