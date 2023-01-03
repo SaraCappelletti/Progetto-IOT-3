@@ -4,5 +4,7 @@ material/*
 # room-service
 /src/room-service/.gradle/
 /src/room-service/.idea/
+/src/room-service/.settings/
+/src/room-service/.project
 /src/room-service/room-service.iml
 /src/room-service/app/build/
