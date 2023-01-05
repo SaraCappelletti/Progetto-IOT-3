@@ -1,12 +1,17 @@
 package roomservice.task.communication.mqtt;
 
+import roomservice.smartroom.SmartRoom;
 import roomservice.task.Task;
 import io.vertx.core.Vertx;
 import io.vertx.mqtt.MqttServer;
 
 public class MqttCommunicationTask implements Task {
 
-	public MqttCommunicationTask() {
+	final SmartRoom room;
+
+	public MqttCommunicationTask(final SmartRoom room) {
+		this.room = room;
+
 		Vertx vertx = Vertx.vertx();
 		MqttServer mqttServer = MqttServer.create(vertx);
 		mqttServer.endpointHandler(endpoint -> {
