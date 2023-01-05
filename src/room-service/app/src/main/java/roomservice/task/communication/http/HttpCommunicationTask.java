@@ -4,6 +4,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import roomservice.smartroom.SmartRoom;
 import roomservice.task.Task;
 
 import java.util.LinkedList;
@@ -13,14 +14,15 @@ import java.util.stream.Collectors;
 
 public class HttpCommunicationTask implements Task {
 
+    final SmartRoom room;
     int i;
     private String s;
 
-    public HttpCommunicationTask() throws RuntimeException {
-        Vertx vertx = Vertx.vertx();
+    public HttpCommunicationTask(final SmartRoom room) throws RuntimeException {
+        this.room = room;
 
-        Router router = Router.router(vertx);
-
+        final Vertx vertx = Vertx.vertx();
+        final Router router = Router.router(vertx);
         router.route()
                 .handler(BodyHandler.create())
                 .handler(req -> {
@@ -43,7 +45,7 @@ public class HttpCommunicationTask implements Task {
                     throw new RuntimeException("Unable to create Serial-Communication Task");
                 });
     }
-
+//light -> ON/OFF       angle -> 0-100
     @Override
     public void execute() {
 //        System.out.println(i++ + s);
