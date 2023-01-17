@@ -3,8 +3,8 @@
 #include "Scheduler.h"
 #include "Const.h"
 
-SerialComTask::SerialComTask(ServoMotor* servoMotor, Led* led) : 
-  servoMotor(servoMotor), led(led) {
+SerialComTask::SerialComTask(SmartRoom* smartRoom) : 
+  smartRoom(smartRoom) {
     msSent = false;
   }
   
@@ -17,30 +17,35 @@ void SerialComTask::tick(){
   //if a message has not yet been sent to answer the server, then a message on the current status of roomController is sent
   if(!msSent){
     String msg;
-    if(led->isOn()){
-      msg = "ON" + String(DELIMITER);
+    if(smartRoom->getLedState()){
+      msg = "ON";
     }
     else{
-      msg = "OFF" + String(DELIMITER);
+      msg = "OFF";
     }
-    msg = msg + String(servoMotor->getAngle());
+    msg = msg + String(DELIMITER);
+    msg = msg + String(smartRoom->getServoMotorState());
     Serial.println(msg);
     msSent = true;
   }
-  if(!(Scheduler::isBTReceiving)){
+  else{
     int msg = Serial.read();
     if(msg != -1){
       msSent = false;
       String str = String((char) msg);
       String ledStateCommand = str.substring(0, str.indexOf(DELIMITER));
-      String servoStateCommand = str.substring(str.indexOf(DELIMITER), str.length());
-      if(ledStateCommand == "ON"){
-        led->turnOn();
+      String servoStateCommand = str.substring((str.indexOf(DELIMITER) + 1), str.length());
+      if(!(Scheduler::isBTReceiving)){
+        if(ledStateCommand == "ON"){
+          smartRoom->setLedState(true);
+        }
+        else if(ledStateCommand == "OFF"){
+          smartRoom->setLedState(false);
+        }
+        smartRoom->setServoMotorState(servoStateCommand.toInt());
       }
-      else if(ledStateCommand == "OFF"){
-        led->turnOff();
-      }
-      servoMotor->move(servoStateCommand.toInt());
     }
   }
+  
+  
 }

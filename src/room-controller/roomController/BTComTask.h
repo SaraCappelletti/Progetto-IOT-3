@@ -2,19 +2,18 @@
 #define __BTCOMTASK__
 
 #include "Task.h"
-#include "ServoMotor.h"
-#include "Led.h"
-#include "MsgServiceBT.h"
+#include "SmartRoom.h"
+#include "SoftwareSerial.h"
+#include <Wire.h>
 
 class BTComTask : public Task {
   int rxPin;
   int txPin;
-  msgServiceBT* service;
-  ServoMotor* servoMotor;
-  Led* led;
+  SoftwareSerial* channel;
+  SmartRoom* smartRoom;
 
 public:
-  BTComTask(int rxPin, int txPin, ServoMotor* servoMotor, Led* led);  
+  BTComTask(int rxPin, int txPin, SmartRoom* smartRoom);  
   void init(int period);  
   void tick();
 };
