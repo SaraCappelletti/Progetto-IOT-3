@@ -1,6 +1,6 @@
 package roomservice.task.communication.mqtt;
 
-import roomservice.smartroom.SmartRoom;
+import roomservice.task.smartroom.SmartRoom;
 import roomservice.task.Task;
 import io.vertx.core.Vertx;
 import io.vertx.mqtt.MqttServer;

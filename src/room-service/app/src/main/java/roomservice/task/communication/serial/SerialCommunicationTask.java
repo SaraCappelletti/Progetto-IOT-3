@@ -1,6 +1,6 @@
 package roomservice.task.communication.serial;
 
-import roomservice.smartroom.SmartRoom;
+import roomservice.task.smartroom.SmartRoom;
 import roomservice.task.Task;
 
 public class SerialCommunicationTask implements Task {
@@ -19,8 +19,10 @@ public class SerialCommunicationTask implements Task {
 
     @Override
     public void execute() {
-        // EMPTY || [ ON|OFF ]/[0-100]
-
+        // [ ON|OFF ]/[0-100]
+        // var tmp = stato mandato
+        // if recv == tmp
+        //
         System.out.println("\nSerial\n" +
                 "--------------------\n");
         System.out.println("Sending OFF/0");

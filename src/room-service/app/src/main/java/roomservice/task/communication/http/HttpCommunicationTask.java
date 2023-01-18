@@ -4,11 +4,9 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
-import roomservice.smartroom.SmartRoom;
+import roomservice.task.smartroom.SmartRoom;
 import roomservice.task.Task;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
