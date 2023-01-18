@@ -4,14 +4,20 @@ ServoMotor::ServoMotor(const int pin, const int tolerance) : Component(pin), tol
     motor.attach(pin);
 }
 
-void ServoMotor::move(int angle) {
+void ServoMotor::move(int percentege) {
+  //mapping percentege to angle
+  int newAngle = map(percentege, 0, 100, 0, 180);
   //moving the motor only if a new angle has been requested
-  if((angle > this->angle + tolerance) || (angle < this->angle - tolerance)){
-    motor.write(MIN_PULSE_WIDTH + angle*coeff);
-    this->angle = angle;    
-  }
+  //if((newAngle > this->angle + tolerance) || (newAngle < this->angle - tolerance)){
+    motor.write(MIN_PULSE_WIDTH + newAngle*coeff);
+    this->angle = newAngle;    
+  //}
 }
 
 int ServoMotor::getAngle() {
-  return angle;
+  return this->angle;
+}
+
+int ServoMotor::getPercentege(){
+  return map(this->angle, 0, 180, 0, 100);
 }

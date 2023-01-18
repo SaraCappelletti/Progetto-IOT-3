@@ -16,10 +16,10 @@ bool SmartRoom::getLedState(){
   return led->isOn();
 }
 
-void SmartRoom::setServoMotorState(int angle){
-  servoMotor->move(angle);
+void SmartRoom::setServoMotorState(int percentege){
+  servoMotor->move(percentege);
 }
 
 int SmartRoom::getServoMotorState(){
-  return servoMotor->getAngle();
+  return servoMotor->getPercentege();
 }

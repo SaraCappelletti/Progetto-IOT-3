@@ -14,8 +14,9 @@ class ServoMotor : public Component {
 
   public:
     ServoMotor(const int pin, const int tolerance); 
-    void move(int angle);
+    void move(int percentege);
     int getAngle();
+    int getPercentege();
 };
 
 #endif
