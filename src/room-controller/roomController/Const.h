@@ -9,9 +9,9 @@
  */ 
 #define RX_BT_PIN 2
 #define TX_BT_PIN 3
+#define SERVOMOTOR_PIN 5
+#define LED_PIN 4
 
-#define LED_PIN 5
-#define SERVOMOTOR_PIN 4
 
  //defining the periods for the various tasks and for the scheduler
 #define SCHEDULER_PERIOD 100
