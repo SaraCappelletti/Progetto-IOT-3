@@ -2,16 +2,14 @@
 #define __SERIALCOMTASK__
 
 #include "Task.h"
-#include "ServoMotor.h"
-#include "Led.h"
+#include "SmartRoom.h"
 
 class SerialComTask : public Task {
-  ServoMotor* servoMotor;
-  Led* led;
+  SmartRoom* smartRoom;
   bool msSent;
 
 public:
-  SerialComTask(ServoMotor* servoMotor, Led* led);  
+  SerialComTask(SmartRoom* smartRoom);  
   void init(int period);  
   void tick();
 };

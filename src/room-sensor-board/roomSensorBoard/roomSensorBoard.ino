@@ -74,14 +74,20 @@ void ComunicationTaskCode( void * parameter ){
     reconnect();
   }
   client.loop();
-  //TO DO   inviare lo stato del pir e della fotoresistenza
   unsigned long now = millis();
   if (now - lastMsgTime > 10000) {
     lastMsgTime = now;
     value++;
-
+    String currentPirState;
+    if(pir->isDetected()){
+      currentPirState = "ON";
+    }
+    else{
+      currentPirState = "OFF";
+    }
+    String currentPhotoresState = String(photores->read());
     /* creating a msg in the buffer */
-    snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
+    snprintf(msg, MSG_BUFFER_SIZE, currentPirState + String(DELIMITER) + currentPhotoresState + "#%ld", value);
 
     Serial.println(String("Publishing message: ") + msg);
     
