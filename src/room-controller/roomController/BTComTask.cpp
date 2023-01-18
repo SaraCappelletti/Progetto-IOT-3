@@ -22,11 +22,11 @@ void BTComTask::tick(){
     //writing the message into msg
     while(letter != '\n'){
       msg.concat(letter);
-      char letter = (char)channel->read();
+      letter = (char)channel->read();
     }
     //extracting the two parts of the message
-    String msg1 = msg.substring(0, msg.indexOf("/"));
-    String msg2 = msg.substring(msg.indexOf("/") + 1, msg.length());
+    String msg1 = msg.substring(0, msg.indexOf(String(DELIMITER)));
+    String msg2 = msg.substring(msg.indexOf(String(DELIMITER)) + 1, msg.length());
     //modifying status of room object depending on orders received from BT
     if(msg1 == "on"){
       smartRoom->setLedState(true);

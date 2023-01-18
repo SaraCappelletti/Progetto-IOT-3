@@ -16,6 +16,7 @@ void SerialComTask::init(int period){
 void SerialComTask::tick(){
   //if a message has not yet been sent to answer the server, then a message on the current status of roomController is sent
   if(!msSent){
+    msSent = true;
     String msg;
     if(smartRoom->getLedState()){
       msg = "ON";
@@ -26,16 +27,21 @@ void SerialComTask::tick(){
     msg = msg + String(DELIMITER);
     msg = msg + String(smartRoom->getServoMotorState());
     Serial.println(msg);
-    msSent = true;
   }
   else{
     int msg = Serial.read();
     if(msg != -1){
       msSent = false;
-      String str = String((char) msg);
+      String str = "";
+      char letter = (char)msg;
+      //writing the message into msgStr
+      while(letter != '\n'){
+        str.concat(letter);
+        letter = (char)Serial.read();
+      }
       String ledStateCommand = str.substring(0, str.indexOf(DELIMITER));
       String servoStateCommand = str.substring((str.indexOf(DELIMITER) + 1), str.length());
-      if(!(Scheduler::isBTReceiving)){
+      if(!(Scheduler::isBTReceiving())){
         if(ledStateCommand == "ON"){
           smartRoom->setLedState(true);
         }
