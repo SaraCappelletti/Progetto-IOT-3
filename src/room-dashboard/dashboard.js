@@ -82,7 +82,7 @@ async function askForData(){
         override.append('light', lightSwitch.checked ? 'ON' : 'OFF');
         override.append('rollerBlind', +blindRange.value)
     }
-    /*const resp = await fetch("localhost", {
+    /*const resp = await fetch("http://localhost", {
         method: 'POST',
         body: override,
     });
