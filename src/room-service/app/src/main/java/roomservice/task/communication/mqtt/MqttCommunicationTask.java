@@ -1,6 +1,6 @@
 package roomservice.task.communication.mqtt;
 
-import roomservice.smartroom.SmartRoom;
+import roomservice.task.smartroom.SmartRoom;
 import roomservice.task.Task;
 import io.vertx.core.Vertx;
 import io.vertx.mqtt.MqttServer;
@@ -8,9 +8,11 @@ import io.vertx.mqtt.MqttServer;
 public class MqttCommunicationTask implements Task {
 
 	final SmartRoom room;
+	private final int priority;
 
-	public MqttCommunicationTask(final SmartRoom room) {
+	public MqttCommunicationTask(final SmartRoom room, final int priorityLevel) {
 		this.room = room;
+		this.priority = priorityLevel;
 
 		Vertx vertx = Vertx.vertx();
 		MqttServer mqttServer = MqttServer.create(vertx);
