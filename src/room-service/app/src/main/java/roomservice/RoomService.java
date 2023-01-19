@@ -22,9 +22,9 @@ public class RoomService {
 
         try {
             final Task room = new SmartRoomImpl();
-//            final Task httpCommunicationTask = new HttpCommunicationTask(room);
-//            final Task mqttCommunicationTask = new MqttCommunicationTask(room);
-            final Task serialCommunicationTask = new SerialCommunicationTask(args[0], room);
+//            final Task httpCommunicationTask = new HttpCommunicationTask((SmartRoom) room);
+//            final Task mqttCommunicationTask = new MqttCommunicationTask((SmartRoom) room);
+            final Task serialCommunicationTask = new SerialCommunicationTask(args[0], (SmartRoom) room);
 
             final Scheduler scheduler = new Scheduler(
                     Set.of(
