@@ -1,9 +1,9 @@
 package roomservice.task.communication.serial;
 
+import java.util.Arrays;
+
 import roomservice.task.smartroom.SmartRoom;
 import roomservice.task.Task;
-
-import java.util.Arrays;
 
 public class SerialCommunicationTask implements Task {
 
