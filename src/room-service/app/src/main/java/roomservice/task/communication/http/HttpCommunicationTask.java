@@ -15,15 +15,38 @@ public class HttpCommunicationTask implements Task {
     final SmartRoom room;
     int i;
     private String s;
+    private final int priority;
 
-    public HttpCommunicationTask(final SmartRoom room) throws RuntimeException {
+    public HttpCommunicationTask(final SmartRoom room, final int priorityLevel) throws RuntimeException {
         this.room = room;
+        this.priority = priorityLevel;
 
         final Vertx vertx = Vertx.vertx();
         final Router router = Router.router(vertx);
         router.route()
                 .handler(BodyHandler.create())
                 .handler(req -> {
+
+//                    {
+//                        "2022-01-19T10:05:22.123": {
+//                            "light": "ON",
+//                            "rollerBlind": 30
+//                        },
+//                        "2022-01-19T10:05:21.123": {
+//                            "light": "ON",
+//                            "rollerBlind": 50
+//                        },
+//                        "2022-01-19T10:05:20.123": {
+//                            "light": "OFF",
+//                            "rollerBlind": 70
+//                        },
+//                        "2022-01-19T10:05:19.123": {
+//                            "light": "ON",
+//                            "rollerBlind": 20
+//                        }
+//                    }
+
+
                     req.request().params().forEach((n, v) -> System.out.println(n + ": " + v));
                     req.json(new JsonObject(req.request().params()
                             .entries().stream()

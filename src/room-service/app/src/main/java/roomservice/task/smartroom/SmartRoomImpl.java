@@ -4,14 +4,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import roomservice.task.Task;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+//import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
 public class SmartRoomImpl implements SmartRoom, Task {
 
     // Does not manage list-full
-    private final List<Pair<String, String>> dateHourHistory;
+    private final List<Pair<String, Pair<Boolean, Integer>>> dateHourHistory;
 
     private boolean currLight;
     private int currRollerBlindsUnrollmentPercentage;
@@ -49,20 +49,29 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public void execute() {
+        this.lastPriorityLevel = 0;
         this.dateHourHistory.add(Pair.of(
-            DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss").format(LocalDateTime.now()),
-            this.getTempState()
+                LocalDateTime.now().toString(),
+                this.getTempState()
         ));
+//        this.dateHourHistory.add(Pair.of(
+//            DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss").format(
+//                    LocalDateTime.now()
+//            ),
+//            this.getTempState()
+//        ));
     }
 
     @Override
     public String toString() {
-        return this.dateHourHistory.isEmpty() ? "" :
-                this.dateHourHistory.get(this.dateHourHistory.size() - 1).getValue();
+        if (this.dateHourHistory.isEmpty())
+            return "";
+        var tmp = this.dateHourHistory.get(this.dateHourHistory.size() - 1).getValue();
+        return tmp.getKey() ? "ON" : "OFF" + "/" + tmp.getValue();
     }
 
-    private String getTempState() {
-        return this.currLight ? "ON" : "OFF" + "/" + this.currRollerBlindsUnrollmentPercentage;
+    private Pair<Boolean, Integer> getTempState() {
+        return Pair.of(this.currLight, this.currRollerBlindsUnrollmentPercentage);
     }
 
 }
