@@ -26,16 +26,13 @@ public class SerialCommunicationTask implements Task {
         System.out.println("\nSerial\n" +
                 "--------------------\n");
         System.out.println("Sending OFF/0");
-        channel.sendMsg("OFF/0");
+        channel.sendMsg(this.room.toString());
         String msg = null;
         try {
             msg = this.channel.receiveMsg();
-            System.out.println("Received: "+msg);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            System.out.println("Received: " + msg);
+
+            Thread.sleep(500);
         } catch (InterruptedException e) {
         }
     }

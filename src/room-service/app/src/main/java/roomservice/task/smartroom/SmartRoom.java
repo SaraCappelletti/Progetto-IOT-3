@@ -4,12 +4,8 @@ public interface SmartRoom {
 
     boolean isLightOn();
 
-    void setLightOn(final boolean lightOn);
-
     int getRollerBlindsUnrollmentPercentage();
 
-    void setRollerBlindsUnrollmentPercentage(final int rollerBlindsUnrollmentPercentage);
-
-    void setTempValues(final boolean lightOn, final int rollerBlindsUnrollmentPercentage);
+    boolean setState(final boolean lightOn, final int rollerBlindsUnrollmentPercentage, final int priorityLevel);
 
 }

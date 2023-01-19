@@ -15,43 +15,54 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     private boolean currLight;
     private int currRollerBlindsUnrollmentPercentage;
+    private int lastPriorityLevel;
 
     public SmartRoomImpl() {
         this.dateHourHistory = new LinkedList<>();
         this.currLight = false;
         this.currRollerBlindsUnrollmentPercentage = 100;
+        this.lastPriorityLevel = 0;
     }
 
     public synchronized boolean isLightOn() {
         return this.currLight;
     }
 
-    public synchronized void setLightOn(final boolean lightOn) {
-        this.currLight = lightOn;
-    }
-
     public synchronized int getRollerBlindsUnrollmentPercentage() {
         return this.currRollerBlindsUnrollmentPercentage;
     }
 
-    public synchronized void setRollerBlindsUnrollmentPercentage(final int rollerBlindsUnrollmentPercentage) {
-        this.currRollerBlindsUnrollmentPercentage = rollerBlindsUnrollmentPercentage;
-    }
-
     @Override
-    public void setTempValues(final boolean lightOn, final int rollerBlindsUnrollmentPercentage) {
+    public synchronized boolean setState(final boolean lightOn, final int rollerBlindsUnrollmentPercentage, final int priorityLevel) {
+        if (priorityLevel < this.lastPriorityLevel)
+            return false;
+
+        if (this.isLightOn() == lightOn && this.getRollerBlindsUnrollmentPercentage() == rollerBlindsUnrollmentPercentage)
+            return false;
+
+        this.lastPriorityLevel = priorityLevel;
         this.currLight = lightOn;
         this.currRollerBlindsUnrollmentPercentage = rollerBlindsUnrollmentPercentage;
+
+        return true;
     }
 
     @Override
     public void execute() {
-        this.dateHourHistory.add(
-            Pair.of(
-                DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss").format(LocalDateTime.now()),
-                this.currLight ? "ON" : "OFF" + "/" + this.currRollerBlindsUnrollmentPercentage
-            )
-        );
+        this.dateHourHistory.add(Pair.of(
+            DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss").format(LocalDateTime.now()),
+            this.getTempState()
+        ));
+    }
+
+    @Override
+    public String toString() {
+        return this.dateHourHistory.isEmpty() ? "" :
+                this.dateHourHistory.get(this.dateHourHistory.size() - 1).getValue();
+    }
+
+    private String getTempState() {
+        return this.currLight ? "ON" : "OFF" + "/" + this.currRollerBlindsUnrollmentPercentage;
     }
 
 }
