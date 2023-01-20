@@ -71,7 +71,7 @@ public class HttpCommunicationTask implements Task {
     public void execute() {
         var state = this.getLocalState();
         if (state.isPresent()) {
-            System.out.println(state.get());
+            System.out.println("Sei te " + state.get());
             this.room.setState(state, this.priority);
             this.setLocalState(Optional.empty());
         }
