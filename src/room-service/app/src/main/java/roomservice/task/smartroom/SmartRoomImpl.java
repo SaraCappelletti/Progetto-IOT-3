@@ -40,7 +40,7 @@ public class SmartRoomImpl implements SmartRoom, Task {
         if (state.isEmpty() || priorityLevel < this.lastPriorityLevel)
             return;
 
-        if (this.currState.get().getKey() == state.get().getKey() && this.currState.get().getValue() == state.get().getValue())
+        if (this.currState.isPresent() && (this.currState.get().getKey() == state.get().getKey() && this.currState.get().getValue() == state.get().getValue()))
             return;
 
         this.lastPriorityLevel = priorityLevel;
