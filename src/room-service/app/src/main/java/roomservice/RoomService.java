@@ -39,7 +39,7 @@ public class RoomService {
 
             scheduler.schedule();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             System.exit(0);
         }
     }
