@@ -46,8 +46,7 @@ public class HttpCommunicationTask implements Task {
                 // Start listening
                 .listen(8088)
                 // Print the port
-                .onSuccess(server -> System.out.println("HTTP on http://localhost:" + server.actualPort() +
-                                                        "\n--------------------\n"))
+                .onSuccess(server -> System.out.println("HTTP on http://localhost:" + server.actualPort() + "\n--------------------\n"))
                 .onFailure(server -> {
                     throw new RuntimeException("Unable to create Serial-Communication Task");
                 });
