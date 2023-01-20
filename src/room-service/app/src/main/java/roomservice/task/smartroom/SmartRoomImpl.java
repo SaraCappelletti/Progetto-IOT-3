@@ -1,77 +1,91 @@
 package roomservice.task.smartroom;
 
-import org.apache.commons.lang3.tuple.Pair;
-import roomservice.task.Task;
-
 import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.NavigableMap;
+import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.TreeMap;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import roomservice.task.Task;
 
 public class SmartRoomImpl implements SmartRoom, Task {
 
     // Does not manage list-full
-    private final List<Pair<String, Pair<Boolean, Integer>>> dateHourHistory;
-
-    private boolean currLight;
-    private int currRollerBlindsUnrollmentPercentage;
+    private final NavigableMap<String, Pair<Boolean, Integer>> dateHourHistory;
+    private Optional<Pair<Boolean, Integer>> currState = Optional.empty();
     private int lastPriorityLevel;
 
     public SmartRoomImpl() {
-        this.dateHourHistory = new LinkedList<>();
-        this.currLight = false;
-        this.currRollerBlindsUnrollmentPercentage = 100;
+        this.dateHourHistory = new TreeMap<>();
         this.lastPriorityLevel = 0;
     }
 
-    public synchronized boolean isLightOn() {
-        return this.currLight;
-    }
+//    private synchronized boolean isLightOn() {
+//        if (this.currState.isPresent()) {
+//            return this.currState.get().getKey();
+//        }
+//        return false;
+//    }
+//
+//    private synchronized int getRollerBlindsUnrollmentPercentage() {
+//        return this.currRollerBlindsUnrollmentPercentage;
+//    }
 
-    public synchronized int getRollerBlindsUnrollmentPercentage() {
-        return this.currRollerBlindsUnrollmentPercentage;
+    @Override
+    public synchronized void setState(final Optional<Pair<Boolean, Integer>> state, final int priorityLevel) {
+        if (priorityLevel < this.lastPriorityLevel)
+            return;
+
+//        if (this.isLightOn() == state.get().getKey() && this.getRollerBlindsUnrollmentPercentage() == state.get().getValue())
+//            return false;
+
+        this.lastPriorityLevel = priorityLevel;
+        this.currState = state;
+//        return true;
     }
 
     @Override
-    public synchronized boolean setState(final boolean lightOn, final int rollerBlindsUnrollmentPercentage, final int priorityLevel) {
-        if (priorityLevel < this.lastPriorityLevel)
-            return false;
+    public synchronized NavigableMap<String, Pair<Boolean, Integer>> getHistory() {
+        return new TreeMap<>(this.dateHourHistory);
+    }
 
-        if (this.isLightOn() == lightOn && this.getRollerBlindsUnrollmentPercentage() == rollerBlindsUnrollmentPercentage)
-            return false;
-
-        this.lastPriorityLevel = priorityLevel;
-        this.currLight = lightOn;
-        this.currRollerBlindsUnrollmentPercentage = rollerBlindsUnrollmentPercentage;
-
-        return true;
+    @Override
+    public String getHistoryAsJsonString() {
+        var json = new StringBuilder("{");
+        var sj = new StringJoiner(",");
+        this.getHistory().forEach((k, v) -> sj.add("\"" + k + "\":" + "{" + "\"light\":" + "\"" + (v.getKey() ? "ON" : "OFF") + "\"" + "," + "\"rollerBlind\":" + v.getValue() + "}"));
+        json.append(sj).append("}");
+        return json.toString();
     }
 
     @Override
     public void execute() {
         this.lastPriorityLevel = 0;
-        this.dateHourHistory.add(Pair.of(
-                LocalDateTime.now().toString(),
-                this.getTempState()
-        ));
-//        this.dateHourHistory.add(Pair.of(
-//            DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss").format(
-//                    LocalDateTime.now()
-//            ),
-//            this.getTempState()
-//        ));
+        var state = this.currState;
+        this.setState(Optional.empty(), lastPriorityLevel);
+        if (state.isPresent()) {
+            this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state.get());
+            System.out.println(getHistoryAsJsonString());
+        }
     }
 
     @Override
     public String toString() {
-        if (this.dateHourHistory.isEmpty())
+        if (this.getHistory().isEmpty())
             return "";
-        var tmp = this.dateHourHistory.get(this.dateHourHistory.size() - 1).getValue();
+        var tmp = this.getHistory().lastEntry().getValue();
         return tmp.getKey() ? "ON" : "OFF" + "/" + tmp.getValue();
     }
 
-    private Pair<Boolean, Integer> getTempState() {
-        return Pair.of(this.currLight, this.currRollerBlindsUnrollmentPercentage);
+    private synchronized void addToHistory(final String time, final Pair<Boolean, Integer> state) {
+        this.dateHourHistory.put(time, state);
     }
 
+//    private synchronized Pair<Boolean, Integer> getTempState() {
+//        return Pair.of(this.currLight, this.currRollerBlindsUnrollmentPercentage);
+//    }
+//
 }

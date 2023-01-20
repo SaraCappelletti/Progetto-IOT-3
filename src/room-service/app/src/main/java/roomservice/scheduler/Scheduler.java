@@ -1,9 +1,9 @@
 package roomservice.scheduler;
 
-import roomservice.task.Task;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import roomservice.task.Task;
 
 public class Scheduler {
 
@@ -16,6 +16,9 @@ public class Scheduler {
     public void schedule() {
         while (true) {
             this.taskSet.forEach(Task::execute);
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ignored) {}
         }
     }
 
