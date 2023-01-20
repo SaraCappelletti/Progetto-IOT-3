@@ -15,7 +15,6 @@ BTComTask* btComTask = new BTComTask(RX_BT_PIN, TX_BT_PIN, smartRoom);
 SerialComTask* serialComTask = new SerialComTask(smartRoom);
 
 void setup(){
-  smartRoom->setServoMotorState(100);
   //initializing scheduler
   sched.init();
   
