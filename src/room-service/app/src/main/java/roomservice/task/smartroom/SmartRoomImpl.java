@@ -20,6 +20,7 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     public SmartRoomImpl() {
         this.dateHourHistory = new TreeMap<>();
+        this.setState(Optional.of(Pair.of(false, 100)), 0);
         this.lastPriorityLevel = 0;
     }
 
