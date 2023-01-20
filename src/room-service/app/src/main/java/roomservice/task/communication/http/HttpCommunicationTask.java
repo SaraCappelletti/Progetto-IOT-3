@@ -1,10 +1,12 @@
 package roomservice.task.communication.http;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 
+import io.vertx.ext.web.handler.CorsHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import roomservice.task.smartroom.SmartRoom;
 import roomservice.task.Task;
@@ -25,6 +27,16 @@ public class HttpCommunicationTask implements Task {
         final Vertx vertx = Vertx.vertx();
         final Router router = Router.router(vertx);
         router.route()
+                .handler(CorsHandler.create("*")
+                    .allowedMethod(HttpMethod.GET)
+                    .allowedMethod(HttpMethod.POST)
+                    .allowedMethod(HttpMethod.PUT)
+                    .allowedMethod(HttpMethod.OPTIONS)
+                    .allowCredentials(true)
+                    .allowedHeader("Access-Control-Allow-Method")
+                    .allowedHeader("Access-Control-Allow-Origin")
+                    .allowedHeader("Access-Control-Allow-Credentials")
+                    .allowedHeader("Content-Type"))
                 .handler(BodyHandler.create())
                 .handler(req -> {
                     var params = req.request().params();
