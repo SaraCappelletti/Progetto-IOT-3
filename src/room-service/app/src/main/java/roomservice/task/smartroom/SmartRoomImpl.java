@@ -20,7 +20,7 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     public SmartRoomImpl() {
         this.dateHourHistory = new TreeMap<>();
-        this.setState(Optional.of(Pair.of(false, 100)), 0);
+        this.currState = Optional.of(Pair.of(false, 100));
         this.lastPriorityLevel = 0;
     }
 
@@ -37,11 +37,11 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public synchronized void setState(final Optional<Pair<Boolean, Integer>> state, final int priorityLevel) {
-        if (priorityLevel < this.lastPriorityLevel)
+        if (state.isEmpty() || priorityLevel < this.lastPriorityLevel)
             return;
 
-//        if (this.isLightOn() == state.get().getKey() && this.getRollerBlindsUnrollmentPercentage() == state.get().getValue())
-//            return false;
+        if (this.currState.isPresent() && (this.currState.get().getKey() == state.get().getKey() && this.currState.get().getValue() == state.get().getValue()))
+            return;
 
         this.lastPriorityLevel = priorityLevel;
         this.currState = state;
@@ -64,13 +64,13 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public void execute() {
-        this.lastPriorityLevel = 0;
         var state = this.currState;
-        this.setState(Optional.empty(), lastPriorityLevel);
         if (state.isPresent()) {
             this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state.get());
-            System.out.println(getHistoryAsJsonString());
+            System.out.println((this.getHistory().lastEntry().getValue().getKey() ? "ON" : "OFF")+ "/" + this.getHistory().lastEntry().getValue().getValue() + (this.lastPriorityLevel == 0 ? " -> mqtt" : this.lastPriorityLevel == 1 ? " -> http" : " -> serial"));
         }
+        this.lastPriorityLevel = 0;
+        this.setState(Optional.empty(), lastPriorityLevel);
     }
 
     @Override
