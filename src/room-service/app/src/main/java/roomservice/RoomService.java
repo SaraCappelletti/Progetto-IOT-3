@@ -17,9 +17,10 @@ public class RoomService {
             System.out.println("Usage: " + (System.getenv("SHELL") != null ? "./gradlew" : ".\\gradlew.bat") + " run --args=\"<Port name for arduino serial communication>\"");
             return;
         }
-        System.out.println("--------------------\n" +
-                            "Room-Service started\n" +
-                            "--------------------");
+        System.out.println("""
+                --------------------
+                Room-Service started
+                --------------------""");
 
 
         try {
