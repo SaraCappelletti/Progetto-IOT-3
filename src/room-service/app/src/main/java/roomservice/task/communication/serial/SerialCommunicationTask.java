@@ -31,7 +31,9 @@ public class SerialCommunicationTask implements Task {
                 --------------------
                 """);
         System.out.println("Sending ...");
-        channel.sendMsg(this.room.toString());
+        var msg = this.room.getHistory().lastEntry().getValue();
+        var send = (msg.getKey() ? "ON" : "OFF") + "/" + msg.getValue();
+        channel.sendMsg(send);
 
         try {
             System.out.println("Receiving ...");

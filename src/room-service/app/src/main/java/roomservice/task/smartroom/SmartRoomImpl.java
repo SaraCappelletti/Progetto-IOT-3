@@ -20,7 +20,7 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     public SmartRoomImpl() {
         this.dateHourHistory = new TreeMap<>();
-        this.setState(Optional.of(Pair.of(false, 100)), 0);
+        this.currState = Optional.of(Pair.of(false, 100));
         this.lastPriorityLevel = 0;
     }
 
@@ -37,11 +37,11 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public synchronized void setState(final Optional<Pair<Boolean, Integer>> state, final int priorityLevel) {
-        if (priorityLevel < this.lastPriorityLevel)
+        if (this.currState.isEmpty() || state.isEmpty() || priorityLevel < this.lastPriorityLevel)
             return;
 
-//        if (this.isLightOn() == state.get().getKey() && this.getRollerBlindsUnrollmentPercentage() == state.get().getValue())
-//            return false;
+        if (this.currState.get().getKey() == state.get().getKey() && this.currState.get().getValue() == state.get().getValue())
+            return;
 
         this.lastPriorityLevel = priorityLevel;
         this.currState = state;
