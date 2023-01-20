@@ -3,6 +3,7 @@ package roomservice.task.smartroom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.NavigableMap;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.TreeMap;
 
@@ -14,38 +15,36 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     // Does not manage list-full
     private final NavigableMap<String, Pair<Boolean, Integer>> dateHourHistory;
-
-    private boolean currLight;
-    private int currRollerBlindsUnrollmentPercentage;
+    private Optional<Pair<Boolean, Integer>> currState = Optional.empty();
     private int lastPriorityLevel;
 
     public SmartRoomImpl() {
         this.dateHourHistory = new TreeMap<>();
-        this.currLight = false;
-        this.currRollerBlindsUnrollmentPercentage = 100;
         this.lastPriorityLevel = 0;
     }
 
-    public synchronized boolean isLightOn() {
-        return this.currLight;
-    }
-
-    public synchronized int getRollerBlindsUnrollmentPercentage() {
-        return this.currRollerBlindsUnrollmentPercentage;
-    }
+//    private synchronized boolean isLightOn() {
+//        if (this.currState.isPresent()) {
+//            return this.currState.get().getKey();
+//        }
+//        return false;
+//    }
+//
+//    private synchronized int getRollerBlindsUnrollmentPercentage() {
+//        return this.currRollerBlindsUnrollmentPercentage;
+//    }
 
     @Override
-    public synchronized boolean setState(final boolean lightOn, final int rollerBlindsUnrollmentPercentage, final int priorityLevel) {
+    public synchronized void setState(final Optional<Pair<Boolean, Integer>> state, final int priorityLevel) {
         if (priorityLevel < this.lastPriorityLevel)
-            return false;
+            return;
 
-        if (this.isLightOn() == lightOn && this.getRollerBlindsUnrollmentPercentage() == rollerBlindsUnrollmentPercentage)
-            return false;
+//        if (this.isLightOn() == state.get().getKey() && this.getRollerBlindsUnrollmentPercentage() == state.get().getValue())
+//            return false;
 
         this.lastPriorityLevel = priorityLevel;
-        this.currLight = lightOn;
-        this.currRollerBlindsUnrollmentPercentage = rollerBlindsUnrollmentPercentage;
-        return true;
+        this.currState = state;
+//        return true;
     }
 
     @Override
@@ -65,7 +64,12 @@ public class SmartRoomImpl implements SmartRoom, Task {
     @Override
     public void execute() {
         this.lastPriorityLevel = 0;
-        this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), this.getTempState());
+        var state = this.currState;
+        this.setState(Optional.empty(), lastPriorityLevel);
+        if (state.isPresent()) {
+            this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state.get());
+            System.out.println(getHistoryAsJsonString());
+        }
     }
 
     @Override
@@ -80,8 +84,8 @@ public class SmartRoomImpl implements SmartRoom, Task {
         this.dateHourHistory.put(time, state);
     }
 
-    private synchronized Pair<Boolean, Integer> getTempState() {
-        return Pair.of(this.currLight, this.currRollerBlindsUnrollmentPercentage);
-    }
-
+//    private synchronized Pair<Boolean, Integer> getTempState() {
+//        return Pair.of(this.currLight, this.currRollerBlindsUnrollmentPercentage);
+//    }
+//
 }

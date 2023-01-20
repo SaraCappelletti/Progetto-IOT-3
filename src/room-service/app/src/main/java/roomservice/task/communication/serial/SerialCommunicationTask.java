@@ -1,7 +1,9 @@
 package roomservice.task.communication.serial;
 
 import java.util.Arrays;
+import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.Pair;
 import roomservice.task.smartroom.SmartRoom;
 import roomservice.task.Task;
 
@@ -37,7 +39,7 @@ public class SerialCommunicationTask implements Task {
 
             boolean lights = receive.get(0).equals("ON");
             int rollerBlinds = Integer.parseInt(receive.get(1));
-            this.room.setState(lights, rollerBlinds, this.priority);
+            this.room.setState(Optional.of(Pair.of(lights, rollerBlinds)), this.priority);
 
             Thread.sleep(500);
         } catch (InterruptedException ignored) {}

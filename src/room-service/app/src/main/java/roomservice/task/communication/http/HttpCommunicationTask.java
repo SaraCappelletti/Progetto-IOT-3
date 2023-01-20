@@ -57,10 +57,11 @@ public class HttpCommunicationTask implements Task {
 
     @Override
     public void execute() {
-        this.getLocalState().ifPresent(booleanIntegerPair -> {
-            this.room.setState(booleanIntegerPair.getKey(), booleanIntegerPair.getValue(), this.priority);
+        var state = this.getLocalState();
+        if (state.isPresent()) {
+            this.room.setState(state, this.priority);
             this.setLocalState(Optional.empty());
-        });
+        }
     }
 
     private synchronized void setLocalState(final Optional<Pair<Boolean, Integer>> state) {
