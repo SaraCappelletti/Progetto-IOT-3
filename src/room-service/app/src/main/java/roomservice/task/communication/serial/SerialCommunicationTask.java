@@ -30,14 +30,14 @@ public class SerialCommunicationTask implements Task {
                 Serial
                 --------------------
                 """);
-        System.out.println("Sending ...");
         var msg = this.room.getHistory().lastEntry().getValue();
         var send = (msg == null ? "" : msg.getKey() ? "ON" : "OFF") + "/" + msg.getValue();
+        System.out.println("Sending "+send);
         channel.sendMsg(send);
 
         try {
-            System.out.println("Receiving ...");
             var receive = Arrays.stream(this.channel.receiveMsg().split("/")).toList();
+            System.out.println("Receiving " + receive);
 
             boolean lights = receive.get(0).equals("ON");
             int rollerBlinds = Integer.parseInt(receive.get(1));
