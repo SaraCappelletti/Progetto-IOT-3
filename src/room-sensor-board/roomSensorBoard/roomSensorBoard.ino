@@ -17,7 +17,9 @@ char msg[MSG_BUFFER_SIZE];
 
 Led* led = new Led(LED_PIN);
 Pir* pir = new Pir(PIR_PIN);
-Photoresistor photores = new Photoresistor(PHOTORES_PIN);
+Photoresistor* photores = new Photoresistor(PHOTORES_PIN);
+unsigned long lastMsgTime;
+
 
 void setup_wifi() {
 
@@ -77,7 +79,6 @@ void ComunicationTaskCode( void * parameter ){
   unsigned long now = millis();
   if (now - lastMsgTime > 10000) {
     lastMsgTime = now;
-    value++;
     String currentPirState;
     if(pir->isDetected()){
       currentPirState = "ON";
@@ -86,8 +87,9 @@ void ComunicationTaskCode( void * parameter ){
       currentPirState = "OFF";
     }
     String currentPhotoresState = String(photores->read());
+    String tmp = currentPirState + String(DELIMITER) + currentPhotoresState;
     /* creating a msg in the buffer */
-    snprintf(msg, MSG_BUFFER_SIZE, currentPirState + String(DELIMITER) + currentPhotoresState + "#%ld", value);
+    snprintf(msg, MSG_BUFFER_SIZE, tmp.c_str());
 
     Serial.println(String("Publishing message: ") + msg);
     
@@ -98,18 +100,17 @@ void ComunicationTaskCode( void * parameter ){
 }
 
 void LedTaskCode( void * parameter ){
-  if(photores->isDetected()){
+  if(pir->isDetected()){
     led->turnOn();
   }
-  else if(!(photores->isDetected())){
+  else if(!(pir->isDetected())){
     led->turnOff();
   }
 }
 
 void setup() {
-  Serial.begin(9600); 
-  pinMode(led_1, OUTPUT);
-  pinMode(led_2, OUTPUT);
+  Serial.begin(9600);
+  lastMsgTime = millis();
   setup_wifi();
   randomSeed(micros());
   client.setServer(mqtt_server, 1883);
