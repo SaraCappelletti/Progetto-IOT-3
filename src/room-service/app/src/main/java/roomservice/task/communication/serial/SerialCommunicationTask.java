@@ -40,8 +40,7 @@ public class SerialCommunicationTask implements Task {
             this.room.setState(lights, rollerBlinds, this.priority);
 
             Thread.sleep(500);
-        } catch (InterruptedException e) {
-        }
+        } catch (InterruptedException ignored) {}
     }
 
 }

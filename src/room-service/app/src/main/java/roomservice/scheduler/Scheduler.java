@@ -18,8 +18,7 @@ public class Scheduler {
             this.taskSet.forEach(Task::execute);
             try {
                 Thread.sleep(10);
-            } catch (InterruptedException e) {
-            }
+            } catch (InterruptedException ignored) {}
         }
     }
 

@@ -45,7 +45,6 @@ public class SmartRoomImpl implements SmartRoom, Task {
         this.lastPriorityLevel = priorityLevel;
         this.currLight = lightOn;
         this.currRollerBlindsUnrollmentPercentage = rollerBlindsUnrollmentPercentage;
-        System.out.println(this.currLight + " " + this.currRollerBlindsUnrollmentPercentage);
         return true;
     }
 
@@ -55,14 +54,11 @@ public class SmartRoomImpl implements SmartRoom, Task {
     }
 
     @Override
-    public synchronized String getHistoryAsJsonString() {
-        System.out.println(this.dateHourHistory.size());
-        StringBuilder json = new StringBuilder("{");
-        StringJoiner sj = new StringJoiner(",");
-        dateHourHistory.forEach((k, v) -> {
-            sj.add("\"" + k + "\":" + "{" + "\"light\":" + "\"" + (v.getKey() ? "ON" : "OFF") + "\"" + "," + "\"rollerBlind\":" + v.getValue() + "}");
-        });
-        json.append(sj.toString()).append("}");
+    public String getHistoryAsJsonString() {
+        var json = new StringBuilder("{");
+        var sj = new StringJoiner(",");
+        this.getHistory().forEach((k, v) -> sj.add("\"" + k + "\":" + "{" + "\"light\":" + "\"" + (v.getKey() ? "ON" : "OFF") + "\"" + "," + "\"rollerBlind\":" + v.getValue() + "}"));
+        json.append(sj).append("}");
         return json.toString();
     }
 
@@ -70,19 +66,13 @@ public class SmartRoomImpl implements SmartRoom, Task {
     public void execute() {
         this.lastPriorityLevel = 0;
         this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), this.getTempState());
-//        this.dateHourHistory.add(Pair.of(
-//            DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss").format(
-//                    LocalDateTime.now()
-//            ),
-//            this.getTempState()
-//        ));
     }
 
     @Override
     public String toString() {
-        if (this.dateHourHistory.isEmpty())
+        if (this.getHistory().isEmpty())
             return "";
-        var tmp = this.dateHourHistory.lastEntry().getValue();
+        var tmp = this.getHistory().lastEntry().getValue();
         return tmp.getKey() ? "ON" : "OFF" + "/" + tmp.getValue();
     }
 
@@ -90,7 +80,7 @@ public class SmartRoomImpl implements SmartRoom, Task {
         this.dateHourHistory.put(time, state);
     }
 
-    private Pair<Boolean, Integer> getTempState() {
+    private synchronized Pair<Boolean, Integer> getTempState() {
         return Pair.of(this.currLight, this.currRollerBlindsUnrollmentPercentage);
     }
 

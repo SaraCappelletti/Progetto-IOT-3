@@ -28,9 +28,13 @@ public class HttpCommunicationTask implements Task {
                 .handler(req -> {
                     var params = req.request().params();
                     if (params.contains("light") && params.contains("rollerBlind")) {
-                        this.setLight(params.get("light").equals("ON"));
-                        this.setRollerBlind(Integer.parseInt(params.get("rollerBlind")));
-                        System.out.println(this.room.getHistoryAsJsonString());
+                        var light = params.get("light");
+                        if (light.equals("ON") || light.equals("OFF")) {
+                            try {
+                                this.setLight(light.equals("ON"));
+                                this.setRollerBlind(Integer.parseInt(params.get("rollerBlind")));
+                            } catch (Exception ignored) {}
+                        }
                     }
                     req.json(new JsonObject(this.room.getHistoryAsJsonString()));
                 });
