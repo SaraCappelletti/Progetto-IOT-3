@@ -26,6 +26,7 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public synchronized void setState(final Optional<Pair<Boolean, Integer>> state, final int priorityLevel) {
+        if (priorityLevel != 0)  return;
         if (state.isEmpty() || priorityLevel < this.lastPriorityLevel)
             return;
 
