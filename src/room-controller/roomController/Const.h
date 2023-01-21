@@ -15,8 +15,8 @@
 
  //defining the periods for the various tasks and for the scheduler
 #define SCHEDULER_PERIOD 100
-#define BT_COM_PERIOD 200
-#define SERIAL_COM_PERIOD 200
+#define BT_COM_PERIOD 500
+#define SERIAL_COM_PERIOD 500
 
 #define MAXNTASK 20
 
