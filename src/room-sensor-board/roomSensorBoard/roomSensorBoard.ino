@@ -80,7 +80,7 @@ void ComunicationTaskCode( void * parameter ){
   }
   //client.loop();
   unsigned long now = millis();
-  if (now - lastMsgTime > 10000) {
+  if (now - lastMsgTime > 1000) {
     lastMsgTime = now;
     String currentPirState;
     if(pir->isDetected()){
@@ -106,7 +106,6 @@ void ComunicationTaskCode( void * parameter ){
 void LedTaskCode( void * parameter ){
   for(;;){
   if(pir->isDetected()){
-    Serial.println("pir detected");
     led->turnOn();
   }
   else if(!(pir->isDetected())){
