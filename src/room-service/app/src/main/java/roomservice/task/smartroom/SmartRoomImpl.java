@@ -64,13 +64,13 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public void execute() {
+        this.lastPriorityLevel = 0;
         var state = this.currState;
+        this.setState(Optional.empty(), lastPriorityLevel);
         if (state.isPresent()) {
             this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state.get());
-            System.out.println((this.getHistory().lastEntry().getValue().getKey() ? "ON" : "OFF")+ "/" + this.getHistory().lastEntry().getValue().getValue() + (this.lastPriorityLevel == 0 ? " -> mqtt" : this.lastPriorityLevel == 1 ? " -> http" : " -> serial"));
+            System.out.println((this.getHistory().lastEntry().getValue().getKey() ? "ON" : "OFF")+ "/" + this.getHistory().lastEntry().getValue().getValue());
         }
-        this.lastPriorityLevel = 0;
-        this.setState(Optional.empty(), lastPriorityLevel);
     }
 
     @Override
