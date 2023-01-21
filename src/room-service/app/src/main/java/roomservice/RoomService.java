@@ -34,7 +34,7 @@ public class RoomService {
 //                            mqttCommunicationTask,
 //                            httpCommunicationTask,
 //                            serialCommunicationTask,
-//                            room
+                            room
                     )
             );
 
