@@ -42,8 +42,6 @@ public class SerialCommunicationTask implements Task {
             boolean lights = receive.get(0).equals("ON");
             int rollerBlinds = Integer.parseInt(receive.get(1));
             this.room.setState(Optional.of(Pair.of(lights, rollerBlinds)), this.priority);
-
-            Thread.sleep(500);
         } catch (InterruptedException ignored) {}
     }
 
