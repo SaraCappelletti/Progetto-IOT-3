@@ -31,10 +31,10 @@ public class RoomService {
 
             final Scheduler scheduler = new Scheduler(
                     Set.of(
-                            mqttCommunicationTask,
-                            httpCommunicationTask,
-                            serialCommunicationTask,
-                            room
+//                            mqttCommunicationTask,
+//                            httpCommunicationTask,
+//                            serialCommunicationTask,
+//                            room
                     )
             );
 
