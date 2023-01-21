@@ -72,22 +72,25 @@ void reconnect() {
 }
 
 void ComunicationTaskCode( void * parameter ){
+  for(;;){
+
+  
   if (!client.connected()) {
     reconnect();
   }
-  client.loop();
+  //client.loop();
   unsigned long now = millis();
   if (now - lastMsgTime > 10000) {
     lastMsgTime = now;
     String currentPirState;
     if(pir->isDetected()){
-      currentPirState = "ON";
+      currentPirState = "true";
     }
     else{
-      currentPirState = "OFF";
+      currentPirState = "false";
     }
     String currentPhotoresState = String(photores->read());
-    String tmp = currentPirState + String(DELIMITER) + currentPhotoresState;
+    String tmp = String("{\"pirState\":") + currentPirState + String(",\"lumValue\":") +  currentPhotoresState + String("}");
     /* creating a msg in the buffer */
     snprintf(msg, MSG_BUFFER_SIZE, tmp.c_str());
 
@@ -97,14 +100,18 @@ void ComunicationTaskCode( void * parameter ){
     client.publish(topic, msg);  
   }
   delay(DELAY_PERIOD);
+  }  
 }
 
 void LedTaskCode( void * parameter ){
+  for(;;){
   if(pir->isDetected()){
+    Serial.println("pir detected");
     led->turnOn();
   }
   else if(!(pir->isDetected())){
     led->turnOff();
+  }
   }
 }
 
@@ -115,10 +122,11 @@ void setup() {
   randomSeed(micros());
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
-  xTaskCreatePinnedToCore(ComunicationTaskCode,"ComunicationTask",10000,NULL,1,&ComunicationTask,0);                         
+  xTaskCreatePinnedToCore(ComunicationTaskCode,"ComunicationTask",10000,NULL,1,&ComunicationTask,0);
   delay(500);
   xTaskCreatePinnedToCore(LedTaskCode,"LedTask",10000,NULL,1,&LedTask,1);                         
   delay(500);
+  //Serial.println("ready to go");
 }
 
 
