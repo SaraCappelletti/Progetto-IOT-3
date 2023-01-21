@@ -33,7 +33,7 @@ public class RoomService {
                     Set.of(
 //                            mqttCommunicationTask,
 //                            httpCommunicationTask,
-//                            serialCommunicationTask,
+                            serialCommunicationTask,
                             room
                     )
             );
