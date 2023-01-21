@@ -26,14 +26,14 @@ public class RoomService {
         try {
             final Task room = new SmartRoomImpl();
             final Task mqttCommunicationTask = new MqttCommunicationTask((SmartRoom) room, 0);
-//            final Task httpCommunicationTask = new HttpCommunicationTask((SmartRoom) room, 1);
-//            final Task serialCommunicationTask = new SerialCommunicationTask(args[0], (SmartRoom) room, 2);
+            final Task httpCommunicationTask = new HttpCommunicationTask((SmartRoom) room, 1);
+            final Task serialCommunicationTask = new SerialCommunicationTask(args[0], (SmartRoom) room, 2);
 
             final Scheduler scheduler = new Scheduler(
                     Set.of(
                             mqttCommunicationTask,
-//                            httpCommunicationTask,
-//                            serialCommunicationTask,
+                            httpCommunicationTask,
+                            serialCommunicationTask,
                             room
                     )
             );
