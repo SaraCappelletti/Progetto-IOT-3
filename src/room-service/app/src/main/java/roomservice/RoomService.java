@@ -15,14 +15,12 @@ public class RoomService {
     public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Usage: " + (System.getenv("SHELL") != null ? "./gradlew" : ".\\gradlew.bat") + " run --args=\"<Port name for arduino serial communication>\"");
-            return;
+            System.exit(0);
         }
         System.out.println("""
                 --------------------
                 Room-Service started
                 --------------------""");
-
-
         try {
             final Task room = new SmartRoomImpl();
             final Task mqttCommunicationTask = new MqttCommunicationTask((SmartRoom) room, 0);
@@ -31,8 +29,8 @@ public class RoomService {
 
             final Scheduler scheduler = new Scheduler(
                     Set.of(
-//                            mqttCommunicationTask,
-//                            httpCommunicationTask,
+                            mqttCommunicationTask,
+                            httpCommunicationTask,
                             serialCommunicationTask,
                             room
                     )
