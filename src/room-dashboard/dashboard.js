@@ -67,15 +67,6 @@ setInterval(() => {
     askForData();
 }, 1000);
 
-/*fakeData = {};
-function generateFakeData() {
-    fakeData[(new Date()).toString()] = {
-        light: Math.random()<0.5 ? 'ON' : 'OFF',
-        rollerBlind: Math.random()*100|0,
-    };
-    return fakeData;
-}*/
-
 async function askForData(){
     let override = new FormData();
     if (takeControlSwitch.checked) {
@@ -87,7 +78,6 @@ async function askForData(){
         body: override,
     });
     const data = await resp.json();
-    //const data = generateFakeData();
 
     updateChart(data);
 }
