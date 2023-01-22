@@ -21,12 +21,12 @@ public class MqttCommunicationTask implements Task {
 	private final String mqtt_server = "broker.mqtt-dashboard.com";
 	private final String topic = "Leonardo";
     private final int port = 1883;
-    private Optional<Pair<Boolean, Integer>> localState;
+    private Pair<Boolean, Integer> localState;
 
     public MqttCommunicationTask(final SmartRoom room, final int priorityLevel) {
         this.room = room;
         this.priority = priorityLevel;
-        this.localState = Optional.empty();
+        this.localState = Pair.of(false, 100);
 
         Vertx vertx = Vertx.vertx();
         MqttClient mqttClient = MqttClient.create(vertx, new MqttClientOptions()
@@ -42,8 +42,7 @@ public class MqttCommunicationTask implements Task {
                     JsonObject received = new JsonObject(message.payload().toString());
                     boolean light = received.getBoolean("pirState");
                     int rollerBlind = received.getInteger("lumValue");
-                    // Do something with the received parameters
-                    this.setLocalState(Optional.of(Pair.of(light, rollerBlind)));
+                    this.setLocalState(Pair.of(light, rollerBlind));
                 } catch (Exception ignored) {}
             });
         });
@@ -51,18 +50,15 @@ public class MqttCommunicationTask implements Task {
 
     public void execute() {
         var state = this.getLocalState();
-        if (state.isPresent()) {
-            System.out.println("Mqtt " + state.get());
-            this.room.setState(state, this.priority);
-            this.setLocalState(Optional.empty());
-        }
+//        System.out.println("Mqtt " + state);
+        this.room.setState(state, this.priority);
     }
 
-    private synchronized void setLocalState(final Optional<Pair<Boolean, Integer>> state) {
+    private synchronized void setLocalState(final Pair<Boolean, Integer> state) {
         this.localState = state;
     }
 
-    private synchronized Optional<Pair<Boolean, Integer>> getLocalState() {
+    private synchronized Pair<Boolean, Integer> getLocalState() {
         return this.localState;
     }
 
