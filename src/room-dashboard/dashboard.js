@@ -49,7 +49,7 @@ const chart = new Chart(document.getElementById('chart'), {
         maintainAspectRatio: false,
         scales: {
             y: {
-                suggestedMin: -1,
+                suggestedMin: -10,
                 suggestedMax: 100
             },
             x: {
@@ -96,7 +96,7 @@ function updateChart(data) {
     chart.data.labels = Object.keys(data).map(d => new Date(d));
     chart.data.datasets[0].data = Object.values(data).map(o => o.rollerBlind);
     dataLight = Object.values(data).map(o => o.light);
-    chart.data.datasets[1].data = new Array(dataLight.length).fill(-1);
+    chart.data.datasets[1].data = new Array(dataLight.length).fill(-10);
     chart.update();
 }
 
