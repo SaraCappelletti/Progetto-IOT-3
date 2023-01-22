@@ -2,10 +2,7 @@ package roomservice.task.smartroom;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.NavigableMap;
-import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -17,6 +14,7 @@ public class SmartRoomImpl implements SmartRoom, Task {
     private final NavigableMap<String, Pair<Boolean, Integer>> dateHourHistory;
     private Pair<Boolean, Integer> currState;
     private int lastPriorityLevel;
+    private boolean lastPersonOut = false;
 
     public SmartRoomImpl() {
         this.dateHourHistory = new TreeMap<>();
@@ -26,14 +24,25 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public synchronized void setState(final Pair<Boolean, Integer> state, final int priorityLevel) {
-//        if (priorityLevel == 2)  return;
         if (priorityLevel < this.lastPriorityLevel)
             return;
 
         if (this.currState.getKey() == state.getKey() && this.currState.getValue() == state.getValue())
             return;
 
-        System.out.println((priorityLevel == 0 ? "MQTT" : priorityLevel == 1 ? "HTTP" : "Serial") + " " + state);
+        // Room-Sensor
+        if (priorityLevel == 0) {
+            int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+
+            // After 19, if nobody is in the room
+            if (hour < 8 && hour >= 19) {
+                if (!this.lastPersonOut) {
+                    lastPersonOut = !state.getKey();
+                }
+            } else {
+                this.lastPersonOut = false;
+            }
+        }
         this.lastPriorityLevel = priorityLevel;
         this.currState = state;
     }
@@ -58,21 +67,18 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public void execute() {
-        System.out.println("Stato: " + this.getCurrState() + "\n");
         this.lastPriorityLevel = 0;
         var state = this.currState;
         this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state);
-//        System.out.println((this.getHistory().lastEntry().getValue().getKey() ? "ON" : "OFF")+ "/" + this.getHistory().lastEntry().getValue().getValue());
-//        System.out.println("----------------------");
     }
 
-    @Override
-    public String toString() {
-        if (this.getHistory().isEmpty())
-            return "";
-        var tmp = this.getHistory().lastEntry().getValue();
-        return tmp.getKey() ? "ON" : "OFF" + "/" + tmp.getValue();
-    }
+//    @Override
+//    public String toString() {
+//        if (this.getHistory().isEmpty())
+//            return "";
+//        var tmp = this.getHistory().lastEntry().getValue();
+//        return tmp.getKey() ? "ON" : "OFF" + "/" + tmp.getValue();
+//    }
 
     private synchronized void addToHistory(final String time, final Pair<Boolean, Integer> state) {
         this.dateHourHistory.put(time, state);
