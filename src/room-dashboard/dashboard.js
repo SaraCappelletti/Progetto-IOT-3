@@ -65,7 +65,7 @@ const chart = new Chart(document.getElementById('chart'), {
 
 setInterval(() => {
     askForData();
-}, 1000);
+}, 750);
 
 async function askForData(){
     let override = new FormData();
