@@ -21,12 +21,12 @@ public class MqttCommunicationTask implements Task {
 	private final String mqtt_server = "broker.mqtt-dashboard.com";
 	private final String topic = "Leonardo";
     private final int port = 1883;
-    private Pair<Boolean, Integer> localState;
+    private Optional<Pair<Boolean, Integer>> localState;
 
     public MqttCommunicationTask(final SmartRoom room, final int priorityLevel) {
         this.room = room;
         this.priority = priorityLevel;
-        this.localState = Pair.of(false, 100);
+        this.localState = Optional.empty();
 
         Vertx vertx = Vertx.vertx();
         MqttClient mqttClient = MqttClient.create(vertx, new MqttClientOptions()
@@ -42,7 +42,8 @@ public class MqttCommunicationTask implements Task {
                     JsonObject received = new JsonObject(message.payload().toString());
                     boolean light = received.getBoolean("pirState");
                     int rollerBlind = received.getInteger("lumValue");
-                    this.setLocalState(Pair.of(light, rollerBlind));
+                    this.setLocalState(Optional.of(
+                            Pair.of(light, rollerBlind)));
                 } catch (Exception ignored) {}
             });
         });
@@ -50,15 +51,17 @@ public class MqttCommunicationTask implements Task {
 
     public void execute() {
         var state = this.getLocalState();
-//        System.out.println("Mqtt " + state);
-        this.room.setState(state, this.priority);
+        if (state.isPresent()) {
+            this.room.setState(state.get(), this.priority);
+            this.setLocalState(Optional.empty());
+        }
     }
 
-    private synchronized void setLocalState(final Pair<Boolean, Integer> state) {
+    private synchronized void setLocalState(final Optional<Pair<Boolean, Integer>> state) {
         this.localState = state;
     }
 
-    private synchronized Pair<Boolean, Integer> getLocalState() {
+    private synchronized Optional<Pair<Boolean, Integer>> getLocalState() {
         return this.localState;
     }
 

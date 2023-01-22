@@ -17,12 +17,12 @@ public class HttpCommunicationTask implements Task {
 
     final SmartRoom room;
     private final int priority;
-    private Pair<Boolean, Integer> localState;
+    private Optional<Pair<Boolean, Integer>> localState;
 
     public HttpCommunicationTask(final SmartRoom room, final int priorityLevel) throws RuntimeException {
         this.room = room;
         this.priority = priorityLevel;
-        this.localState = Pair.of(false, 100);
+        this.localState = Optional.empty();
 
         final Vertx vertx = Vertx.vertx();
         final Router router = Router.router(vertx);
@@ -44,7 +44,8 @@ public class HttpCommunicationTask implements Task {
                         var light = params.get("light");
                         if (light.equals("ON") || light.equals("OFF")) {
                             try {
-                                this.setLocalState(Pair.of(light.equals("ON"), Integer.parseInt(params.get("rollerBlind"))));
+                                this.setLocalState(Optional.of(
+                                        Pair.of(light.equals("ON"), Integer.parseInt(params.get("rollerBlind")))));
                             } catch (Exception ignored) {}
                         }
                     }
@@ -67,15 +68,17 @@ public class HttpCommunicationTask implements Task {
     @Override
     public void execute() {
         var state = this.getLocalState();
-//        System.out.println("Sei te " + state);
-        this.room.setState(state, this.priority);
+        if (state.isPresent()) {
+            this.room.setState(state.get(), this.priority);
+            this.setLocalState(Optional.empty());
+        }
     }
 
-    private synchronized void setLocalState(final Pair<Boolean, Integer> state) {
+    private synchronized void setLocalState(final Optional<Pair<Boolean, Integer>> state) {
         this.localState = state;
     }
 
-    private synchronized Pair<Boolean, Integer> getLocalState() {
+    private synchronized Optional<Pair<Boolean, Integer>> getLocalState() {
         return this.localState;
     }
 

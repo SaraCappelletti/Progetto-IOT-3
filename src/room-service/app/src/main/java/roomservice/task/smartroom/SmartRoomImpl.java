@@ -33,9 +33,13 @@ public class SmartRoomImpl implements SmartRoom, Task {
         if (this.currState.getKey() == state.getKey() && this.currState.getValue() == state.getValue())
             return;
 
-        System.out.println(priorityLevel == 0 ? "MQTT" : priorityLevel == 1 ? "HTTP" : "Serial" + "\n\n " + state + "\n\n");
+        System.out.println((priorityLevel == 0 ? "MQTT" : priorityLevel == 1 ? "HTTP" : "Serial") + " " + state);
         this.lastPriorityLevel = priorityLevel;
         this.currState = state;
+    }
+
+    public synchronized Pair<Boolean, Integer> getCurrState() {
+        return this.currState;
     }
 
     @Override
@@ -54,10 +58,12 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     @Override
     public void execute() {
+        System.out.println("Stato: " + this.getCurrState() + "\n");
         this.lastPriorityLevel = 0;
         var state = this.currState;
         this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state);
-        System.out.println((this.getHistory().lastEntry().getValue().getKey() ? "ON" : "OFF")+ "/" + this.getHistory().lastEntry().getValue().getValue());
+//        System.out.println((this.getHistory().lastEntry().getValue().getKey() ? "ON" : "OFF")+ "/" + this.getHistory().lastEntry().getValue().getValue());
+//        System.out.println("----------------------");
     }
 
     @Override

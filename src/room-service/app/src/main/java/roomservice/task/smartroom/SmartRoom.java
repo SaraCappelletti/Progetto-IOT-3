@@ -10,6 +10,8 @@ public interface SmartRoom {
 
     void setState(final Pair<Boolean, Integer> currState, final int priorityLevel);
 
+    Pair<Boolean, Integer> getCurrState();
+
     NavigableMap<String, Pair<Boolean, Integer>> getHistory();
 
     String getHistoryAsJsonString();

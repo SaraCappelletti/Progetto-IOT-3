@@ -25,7 +25,8 @@ public class SerialCommunicationTask implements Task {
 
     @Override
     public void execute() {
-        var msg = this.room.getHistory().lastEntry().getValue();
+//        var msg = this.room.getHistory().lastEntry().getValue();
+        var msg = this.room.getCurrState();
         var send = (msg == null ? "" : msg.getKey() ? "ON" : "OFF") + "/" + msg.getValue();
 //        System.out.println("Serial -> "+send);
         channel.sendMsg(send);
