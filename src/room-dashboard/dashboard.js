@@ -63,15 +63,15 @@ const chart = new Chart(document.getElementById('chart'), {
 });
 
 
-setInterval(() => {
+setInterval (() => {
     askForData();
 }, 750);
 
-async function askForData(){
+async function askForData() {
     let override = new FormData();
     if (takeControlSwitch.checked) {
         override.append('light', lightSwitch.checked ? 'ON' : 'OFF');
-        override.append('rollerBlind', +blindRange.value)
+        override.append('rollerBlind', + blindRange.value)
     }
     const resp = await fetch("http://localhost:8088", {
         method: 'POST',
@@ -90,6 +90,6 @@ function updateChart(data) {
     chart.update();
 }
 
-function takeControl(){
+function takeControl() {
     lightSwitch.disabled = blindRange.disabled = !takeControlSwitch.checked;
 }
