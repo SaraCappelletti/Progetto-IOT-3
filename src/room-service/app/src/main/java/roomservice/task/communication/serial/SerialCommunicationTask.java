@@ -25,23 +25,18 @@ public class SerialCommunicationTask implements Task {
 
     @Override
     public void execute() {
-        System.out.println("""
-
-                Serial
-                --------------------
-                """);
         var msg = this.room.getHistory().lastEntry().getValue();
         var send = (msg == null ? "" : msg.getKey() ? "ON" : "OFF") + "/" + msg.getValue();
-        System.out.println("Sending "+send);
+//        System.out.println("Serial -> "+send);
         channel.sendMsg(send);
 
         try {
             var receive = Arrays.stream(this.channel.receiveMsg().split("/")).toList();
-            System.out.println("Receiving " + receive);
+//            System.out.println("Receive <- " + receive);
 
             boolean lights = receive.get(0).equals("ON");
             int rollerBlinds = Integer.parseInt(receive.get(1));
-            this.room.setState(Optional.of(Pair.of(lights, rollerBlinds)), this.priority);
+            this.room.setState(Pair.of(lights, rollerBlinds), this.priority);
         } catch (InterruptedException ignored) {}
     }
 

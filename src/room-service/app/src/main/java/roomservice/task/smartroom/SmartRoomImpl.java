@@ -15,24 +15,25 @@ public class SmartRoomImpl implements SmartRoom, Task {
 
     // Does not manage list-full
     private final NavigableMap<String, Pair<Boolean, Integer>> dateHourHistory;
-    private Optional<Pair<Boolean, Integer>> currState = Optional.empty();
+    private Pair<Boolean, Integer> currState;
     private int lastPriorityLevel;
 
     public SmartRoomImpl() {
-        this.currState = Optional.of(Pair.of(false, 100));
         this.dateHourHistory = new TreeMap<>();
+        this.currState = Pair.of(false, 100);
         this.execute();
     }
 
     @Override
-    public synchronized void setState(final Optional<Pair<Boolean, Integer>> state, final int priorityLevel) {
-        if (priorityLevel == 2)  return;
-        if (state.isEmpty() || priorityLevel < this.lastPriorityLevel)
+    public synchronized void setState(final Pair<Boolean, Integer> state, final int priorityLevel) {
+//        if (priorityLevel == 2)  return;
+        if (priorityLevel < this.lastPriorityLevel)
             return;
 
-        if (this.currState.isPresent() && (this.currState.get().getKey() == state.get().getKey() && this.currState.get().getValue() == state.get().getValue()))
+        if (this.currState.getKey() == state.getKey() && this.currState.getValue() == state.getValue())
             return;
 
+        System.out.println(priorityLevel == 0 ? "MQTT" : priorityLevel == 1 ? "HTTP" : "Serial" + "\n\n " + state + "\n\n");
         this.lastPriorityLevel = priorityLevel;
         this.currState = state;
     }
@@ -55,11 +56,8 @@ public class SmartRoomImpl implements SmartRoom, Task {
     public void execute() {
         this.lastPriorityLevel = 0;
         var state = this.currState;
-        this.setState(Optional.empty(), lastPriorityLevel);
-        if (state.isPresent()) {
-            this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state.get());
-            System.out.println((this.getHistory().lastEntry().getValue().getKey() ? "ON" : "OFF")+ "/" + this.getHistory().lastEntry().getValue().getValue());
-        }
+        this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state);
+        System.out.println((this.getHistory().lastEntry().getValue().getKey() ? "ON" : "OFF")+ "/" + this.getHistory().lastEntry().getValue().getValue());
     }
 
     @Override

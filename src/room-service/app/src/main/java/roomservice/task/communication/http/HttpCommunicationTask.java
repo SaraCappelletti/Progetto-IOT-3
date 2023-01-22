@@ -17,12 +17,12 @@ public class HttpCommunicationTask implements Task {
 
     final SmartRoom room;
     private final int priority;
-    private Optional<Pair<Boolean, Integer>> localState;
+    private Pair<Boolean, Integer> localState;
 
     public HttpCommunicationTask(final SmartRoom room, final int priorityLevel) throws RuntimeException {
         this.room = room;
         this.priority = priorityLevel;
-        this.localState = Optional.empty();
+        this.localState = Pair.of(false, 100);
 
         final Vertx vertx = Vertx.vertx();
         final Router router = Router.router(vertx);
@@ -44,10 +44,7 @@ public class HttpCommunicationTask implements Task {
                         var light = params.get("light");
                         if (light.equals("ON") || light.equals("OFF")) {
                             try {
-                                this.setLocalState(Optional.of(
-                                        Pair.of(light.equals("ON"),
-                                                Integer.parseInt(params.get("rollerBlind")))
-                                ));
+                                this.setLocalState(Pair.of(light.equals("ON"), Integer.parseInt(params.get("rollerBlind"))));
                             } catch (Exception ignored) {}
                         }
                     }
@@ -70,18 +67,15 @@ public class HttpCommunicationTask implements Task {
     @Override
     public void execute() {
         var state = this.getLocalState();
-        if (state.isPresent()) {
-            System.out.println("Sei te " + state.get());
-            this.room.setState(state, this.priority);
-            this.setLocalState(Optional.empty());
-        }
+//        System.out.println("Sei te " + state);
+        this.room.setState(state, this.priority);
     }
 
-    private synchronized void setLocalState(final Optional<Pair<Boolean, Integer>> state) {
+    private synchronized void setLocalState(final Pair<Boolean, Integer> state) {
         this.localState = state;
     }
 
-    private synchronized Optional<Pair<Boolean, Integer>> getLocalState() {
+    private synchronized Pair<Boolean, Integer> getLocalState() {
         return this.localState;
     }
 
