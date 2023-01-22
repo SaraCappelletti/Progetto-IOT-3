@@ -30,7 +30,6 @@ public class SerialCommunicationTask implements Task {
         var send = (msg == null ? "" : msg.getKey() ? "ON" : "OFF") + "/" + msg.getValue();
 //        System.out.println("Serial -> "+send);
         channel.sendMsg(send);
-        System.out.println("serialEXECUTE");
 
         try {
             var receive = Arrays.stream(this.channel.receiveMsg().split("/")).toList();
