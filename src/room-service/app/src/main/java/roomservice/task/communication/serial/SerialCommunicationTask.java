@@ -25,15 +25,12 @@ public class SerialCommunicationTask implements Task {
 
     @Override
     public void execute() {
-//        var msg = this.room.getHistory().lastEntry().getValue();
         var msg = this.room.getCurrState();
         var send = (msg == null ? "" : msg.getKey() ? "ON" : "OFF") + "/" + msg.getValue();
-//        System.out.println("Serial -> "+send);
         channel.sendMsg(send);
 
         try {
             var receive = Arrays.stream(this.channel.receiveMsg().split("/")).toList();
-//            System.out.println("Receive <- " + receive);
 
             boolean lights = receive.get(0).equals("ON");
             int rollerBlinds = Integer.parseInt(receive.get(1));
