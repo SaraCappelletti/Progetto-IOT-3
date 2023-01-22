@@ -72,14 +72,6 @@ public class SmartRoomImpl implements SmartRoom, Task {
         this.addToHistory(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").format(LocalDateTime.now()), state);
     }
 
-//    @Override
-//    public String toString() {
-//        if (this.getHistory().isEmpty())
-//            return "";
-//        var tmp = this.getHistory().lastEntry().getValue();
-//        return tmp.getKey() ? "ON" : "OFF" + "/" + tmp.getValue();
-//    }
-
     private synchronized void addToHistory(final String time, final Pair<Boolean, Integer> state) {
         this.dateHourHistory.put(time, state);
     }
