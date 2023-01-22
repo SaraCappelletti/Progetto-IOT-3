@@ -65,7 +65,7 @@ const chart = new Chart(document.getElementById('chart'), {
 
 setInterval(() => {
     askForData();
-}, 500);
+}, 200);
 
 /*fakeData = {};
 function generateFakeData() {
