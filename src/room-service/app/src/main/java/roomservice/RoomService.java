@@ -1,6 +1,6 @@
 package roomservice;
 
-import java.util.Set;
+import java.util.*;
 
 import roomservice.scheduler.Scheduler;
 import roomservice.task.communication.http.HttpCommunicationTask;
@@ -28,11 +28,13 @@ public class RoomService {
             final Task serialCommunicationTask = new SerialCommunicationTask(args[0], (SmartRoom) room, 2);
 
             final Scheduler scheduler = new Scheduler(
-                    Set.of(
-                            mqttCommunicationTask,
-                            httpCommunicationTask,
-                            serialCommunicationTask,
-                            room
+                    new LinkedHashSet<>(
+                            List.of(
+                                mqttCommunicationTask,
+                                httpCommunicationTask,
+                                serialCommunicationTask,
+                                room
+                            )
                     )
             );
 

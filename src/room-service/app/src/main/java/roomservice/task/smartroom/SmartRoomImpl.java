@@ -78,8 +78,4 @@ public class SmartRoomImpl implements SmartRoom, Task {
         this.dateHourHistory.put(time, state);
     }
 
-//    private synchronized Pair<Boolean, Integer> getTempState() {
-//        return Pair.of(this.currLight, this.currRollerBlindsUnrollmentPercentage);
-//    }
-//
 }
