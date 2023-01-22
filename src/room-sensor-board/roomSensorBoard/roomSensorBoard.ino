@@ -80,7 +80,7 @@ void ComunicationTaskCode( void * parameter ){
   }
   //client.loop();
   unsigned long now = millis();
-  if (now - lastMsgTime > 250) {
+  if (now - lastMsgTime > MSG_PERIOD) {
     lastMsgTime = now;
     String currentPirState;
     if(pir->isDetected()){
