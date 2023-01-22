@@ -65,13 +65,13 @@ const chart = new Chart(document.getElementById('chart'), {
 
 setInterval (() => {
     askForData();
-}, 750);
+}, 200);
 
 async function askForData() {
     let override = new FormData();
     if (takeControlSwitch.checked) {
         override.append('light', lightSwitch.checked ? 'ON' : 'OFF');
-        override.append('rollerBlind', + blindRange.value)
+        override.append('rollerBlind', + blindRange.value);
     }
     const resp = await fetch("http://localhost:8088", {
         method: 'POST',
