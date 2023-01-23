@@ -7,14 +7,14 @@
 #include "SerialComTask.h"
 
 
-ServoMotor* servoMotor = new ServoMotor(SERVOMOTOR_PIN, TOLERANCE);
-Led* led = new Led(LED_PIN);
-SmartRoom* smartRoom = new SmartRoom(servoMotor, led);
 Scheduler sched(SCHEDULER_PERIOD);
-BTComTask* btComTask = new BTComTask(RX_BT_PIN, TX_BT_PIN, smartRoom);
-SerialComTask* serialComTask = new SerialComTask(smartRoom);
 
 void setup(){
+  ServoMotor* servoMotor = new ServoMotor(SERVOMOTOR_PIN, TOLERANCE);
+  Led* led = new Led(LED_PIN);
+  SmartRoom* smartRoom = new SmartRoom(servoMotor, led);
+  BTComTask* btComTask = new BTComTask(RX_BT_PIN, TX_BT_PIN, smartRoom);
+  SerialComTask* serialComTask = new SerialComTask(smartRoom);
   //initializing scheduler
   sched.init();
   
