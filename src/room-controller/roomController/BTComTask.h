@@ -11,6 +11,8 @@ class BTComTask : public Task {
   int txPin;
   SoftwareSerial* channel;
   SmartRoom* smartRoom;
+  int disconectionCounter;
+  int disconectionCounterMax;
 
 public:
   BTComTask(int rxPin, int txPin, SmartRoom* smartRoom);  

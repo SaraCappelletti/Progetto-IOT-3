@@ -8,10 +8,10 @@ void ServoMotor::move(int percentege) {
   //mapping percentege to angle
   int newAngle = map(percentege, 0, 100, 180, 0);
   //moving the motor only if a new angle has been requested
-  //if((newAngle > this->angle + tolerance) || (newAngle < this->angle - tolerance)){
+  if((newAngle > this->angle + tolerance) || (newAngle < this->angle - tolerance)){
     motor.write(MIN_PULSE_WIDTH + newAngle*coeff);
     this->angle = newAngle;    
-  //}
+  }
 }
 
 int ServoMotor::getAngle() {

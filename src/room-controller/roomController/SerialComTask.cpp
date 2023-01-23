@@ -1,7 +1,6 @@
 #include "SerialComTask.h"
 #include <Arduino.h>
 #include "Scheduler.h"
-#include "Const.h"
 
 SerialComTask::SerialComTask(SmartRoom* smartRoom) : 
   smartRoom(smartRoom) {

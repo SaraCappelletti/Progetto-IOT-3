@@ -9,6 +9,7 @@
 class Scheduler {
   
   static bool receivingBT;
+  
 
   int basePeriod;
   int nTasks;
@@ -21,6 +22,7 @@ public:
   virtual void schedule();
   static bool isBTReceiving();
   static void setBTReceiving(bool receivingBT);
+
 };
 
 #endif
