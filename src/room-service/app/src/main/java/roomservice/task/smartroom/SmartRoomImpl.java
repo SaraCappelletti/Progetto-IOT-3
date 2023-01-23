@@ -38,6 +38,8 @@ public class SmartRoomImpl implements SmartRoom, Task {
             if (hour < 8 && hour >= 19) {
                 if (!this.lastPersonOut) {
                     lastPersonOut = !state.getKey();
+                } else {
+                    state = Pair.of(state.getKey(), 100);
                 }
             } else {
                 this.lastPersonOut = false;
